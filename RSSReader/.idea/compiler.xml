@@ -9,8 +9,5 @@
         <module name="RSSReader" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="RSSReader" target="1.7" />
-    </bytecodeTargetLevel>
   </component>
 </project>
