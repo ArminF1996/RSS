@@ -7,6 +7,11 @@ final class Client {
   private Scanner reader;
   private String clientName;
 
+  /**
+   * this is constructor of Client class.
+   *
+   * @param clientName each client must have a name.
+   */
   Client(String clientName) {
 
     this.clientName = clientName;
@@ -14,10 +19,19 @@ final class Client {
     this.start();
   }
 
+  /**
+   * with this method we can get the client's name.
+   *
+   * @return clientName.
+   */
   public String getClientName() {
     return clientName;
   }
 
+  /**
+   * this method create for handling the state of client activity. you can see the state diagram for
+   * client activity for more info.
+   */
   private void start() {
 
     boolean flag = true;
@@ -51,6 +65,7 @@ final class Client {
     }
   }
 
+  /** with this method,the clients can adding new sites to application. */
   private void addSite() {
     System.out.println("Write URL of RSS page.\n");
     Scanner reader = new Scanner(System.in);
@@ -58,10 +73,15 @@ final class Client {
     // todo add this site to db
   }
 
+  /** with this method, the clients can updating the database. */
   private void update() {
     // todo update db
   }
 
+  /**
+   * this method create for handling the state of client activity. you can see the state diagram for
+   * client activity for more info.
+   */
   private void viewMode() {
 
     boolean flag = true;
@@ -99,6 +119,7 @@ final class Client {
     }
   }
 
+  /** with this method, the clients can see the 10 latest news from one news agency. */
   private void latest() {
     // todo show sites with id
     System.out.println("write site id.");
@@ -106,6 +127,10 @@ final class Client {
     // todo show latest news
   }
 
+  /**
+   * with this method, the clients can see the history of number of published news per day for
+   * specified news agency.
+   */
   private void history() {
     // todo show sites with id
     System.out.println("write site id.");
@@ -113,10 +138,18 @@ final class Client {
     // todo show history of all day for site
   }
 
+  /**
+   * with this method, the clients can see the number of published news for today for each news
+   * agency.
+   */
   private void today() {
     // todo show history of all sites for today
   }
 
+  /**
+   * this method create for handling the state of client activity. you can see the state diagram for
+   * client activity for more info.
+   */
   private void searchMode() {
 
     boolean flag = true;
@@ -145,12 +178,14 @@ final class Client {
     }
   }
 
+  /** with this method, the clients can search the news by some string in the news body. */
   private void searchByBody() {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
     // todo show all news that contain this string
   }
 
+  /** with this method, the clients can search the news by some string in the news title. */
   private void searchByTitle() {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
