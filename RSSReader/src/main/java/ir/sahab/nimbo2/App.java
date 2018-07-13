@@ -4,5 +4,8 @@ public class App {
   public static void main(String[] args) {
     //        Client client1 = new Client("console");
     //        DbConnector.createEntities();
+    RssDownloader dl = new RssDownloader();
+    dl.downloadRss("http://www.tabnak.ir/fa/rss/allnews");
+
   }
 }
