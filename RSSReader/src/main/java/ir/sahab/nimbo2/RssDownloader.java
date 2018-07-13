@@ -32,6 +32,7 @@ public class RssDownloader {
       e.printStackTrace();
     }
     try {
+      if(fos != null)
       fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
     } catch (IOException e) {
       result = "xml fetching failed.";
