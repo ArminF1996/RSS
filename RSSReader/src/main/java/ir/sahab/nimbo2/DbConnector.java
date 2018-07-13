@@ -12,7 +12,7 @@ public abstract class DbConnector {
   private static String createHistoryEntity =
       "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
   private static String createNewsEntity =
-      "create table if not exists news(link varchar(150) PRIMARY KEY, siteID int, title TINYTEXT, publishDate date, description TEXT, body TEXT);";
+      "create table if not exists news(link TEXT PRIMARY KEY, siteID int, title TEXT, publishDate date, body TEXT);";
 
   public static void setDbUrl(String dbUrl) {
     DbConnector.dbUrl = dbUrl;
