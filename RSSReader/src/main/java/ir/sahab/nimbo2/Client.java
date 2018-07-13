@@ -6,6 +6,7 @@ final class Client {
 
   private Scanner reader;
   private String clientName;
+  private RssDownloader rssDownloader;
 
   /**
    * this is constructor of Client class.
@@ -16,6 +17,7 @@ final class Client {
 
     this.clientName = clientName;
     reader = new Scanner(System.in);
+    rssDownloader = new RssDownloader();
     this.start();
   }
 
@@ -73,7 +75,11 @@ final class Client {
     System.out.println("choose a name for this URL.\n");
     String siteName = reader.next().toLowerCase();
 
-    // todo add this site to db
+    // todo get site's config
+
+    if (rssDownloader.downloadRss(rssUrl, siteName) && DbConnector.addSite(rssUrl, siteName, ""))
+      System.out.println("action finished successfully.");
+    else System.out.println("something wrong!");
   }
 
   /** with this method, the clients can updating the database. */
