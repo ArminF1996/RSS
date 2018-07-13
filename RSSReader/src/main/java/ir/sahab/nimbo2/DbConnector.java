@@ -34,11 +34,12 @@ public abstract class DbConnector {
     return userName;
   }
 
-    /**
-     * whit this method, we can create database entities.
-     * you can see ERD diagram for more information.
-     * @return the result of this commands.
-     */
+  /**
+   * whit this method, we can create database entities. you can see ERD diagram for more
+   * information.
+   *
+   * @return the result of this commands.
+   */
   public static String createEntities() {
 
     String result;
