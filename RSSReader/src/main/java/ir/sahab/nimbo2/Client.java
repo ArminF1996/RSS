@@ -68,8 +68,11 @@ final class Client {
   /** with this method,the clients can adding new sites to application. */
   private void addSite() {
     System.out.println("Write URL of RSS page.\n");
-    Scanner reader = new Scanner(System.in);
     String rssUrl = reader.next().toLowerCase();
+
+    System.out.println("choose a name for this URL.\n");
+    String siteName = reader.next().toLowerCase();
+
     // todo add this site to db
   }
 
