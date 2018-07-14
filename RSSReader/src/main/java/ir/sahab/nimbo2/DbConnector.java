@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class DbConnector {
+public class DbConnector {
 
     private static String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true&useUnicode=true&characterEncoding=utf-8";
     private static String userName = "armin";
@@ -42,9 +42,8 @@ public abstract class DbConnector {
      *
      * @return the result of this commands.
      */
-    public static Boolean createEntities() {
+    public void createEntities() {
 
-        Boolean result = true;
         Connection connection = null;
 
         try {
@@ -59,12 +58,10 @@ public abstract class DbConnector {
                 newsEntity.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
-                result = false;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            result = false;
         } finally {
             try {
                 if (connection != null) connection.close();
@@ -72,7 +69,6 @@ public abstract class DbConnector {
                 e.printStackTrace();
             }
         }
-        return result;
     }
 
     /**
@@ -83,8 +79,7 @@ public abstract class DbConnector {
      * @param config   config of this site. TODO
      * @return return the result of adding new site.
      */
-    public static Boolean addSite(String rssUrl, String siteName, String config) {
-        Boolean result = true;
+    public void addSite(String rssUrl, String siteName, String config) {
         Connection connection = null;
 
         try {
@@ -98,13 +93,11 @@ public abstract class DbConnector {
                 addSite.setString(3, config);
                 addSite.executeUpdate();
             } catch (SQLException e) {
-                result = false;
                 e.printStackTrace();
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            result = false;
         } finally {
             try {
                 if (connection != null) connection.close();
@@ -112,7 +105,6 @@ public abstract class DbConnector {
                 e.printStackTrace();
             }
         }
-        return result;
     }
 
     /**
@@ -121,7 +113,7 @@ public abstract class DbConnector {
      * @param siteName site's name witch choose by client.
      * @return return the action result;
      */
-    public static Boolean addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName) {
+    public boolean addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName) {
         Boolean result = true;
         Connection connection = null;
         int siteID = 0;
