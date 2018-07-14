@@ -14,7 +14,7 @@ public abstract class DbConnector {
     private static String createHistoryEntity =
             "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
     private static String createNewsEntity =
-            "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int, title TEXT CHARACTER SET utf8, publishDate date, body MEDIUMTEXT CHARACTER SET utf8);";
+            "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int, title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
 
     public static void setDbUrl(String dbUrl) {
         DbConnector.dbUrl = dbUrl;
@@ -115,26 +115,40 @@ public abstract class DbConnector {
         return result;
     }
 
+    /**
+     * with this method we can add news of specified site to db.
+     * @param hmArr array list of hashMap for each Item.
+     * @param siteName site's name witch choose by client.
+     * @return return the action result;
+     */
     public static Boolean addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName) {
         Boolean result = true;
         Connection connection = null;
+        int siteID = 0;
         try {
             connection = DriverManager.getConnection(dbUrl, userName, passWord);
-            for (HashMap<String, String> hm: hmArr) {
-                try {
-                    PreparedStatement insertData = connection.prepareStatement("INSERT  INTO news(link,siteID,title,publishDate,body) values (?,?,?,?,?)");
+            siteName = " \"" + siteName + "\"";
+            PreparedStatement siteIdPrepareStatement = connection.prepareStatement("select siteID from sites where siteName=" + siteName);
+            ResultSet resultSet = siteIdPrepareStatement.executeQuery();
+            resultSet.next();
+            siteID = resultSet.getInt(1);
+            for (HashMap<String, String> hm : hmArr) {
+                PreparedStatement insertData = connection.prepareStatement("INSERT  INTO news(link,siteID,title,publishDate,body) values (?,?,?,?,?)");
 
-                    insertData.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    result = false;
-                }
+                insertData.setString(1, hm.get("link"));
+                insertData.setInt(2, siteID);
+                insertData.setString(3, hm.get("title"));
+                insertData.setString(4,hm.get("pubDate"));
+                insertData.setString(5, "test");
+
+                insertData.executeUpdate();
             }
         } catch (SQLException e) {
             result = false;
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
+            if(connection != null)
                 connection.close();
             } catch (SQLException e) {
                 result = false;
