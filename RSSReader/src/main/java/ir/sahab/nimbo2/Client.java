@@ -9,6 +9,7 @@ final class Client {
     private Scanner reader;
     private String clientName;
     private RssData rssData;
+    private DbConnector dbConnector;
 
     /**
      * this is constructor of Client class.
@@ -20,6 +21,7 @@ final class Client {
         this.clientName = clientName;
         reader = new Scanner(System.in);
         rssData = new RssData();
+        dbConnector = new DbConnector();
         this.start();
     }
 
@@ -81,10 +83,10 @@ final class Client {
 
         // todo get site's config
 
-        DbConnector.addSite(rssUrl, siteName, "");
+        dbConnector.addSite(rssUrl, siteName, "");
         ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
 
-        DbConnector.addNewsForSite(rssDataHMap, siteName);
+        dbConnector.addNewsForSite(rssDataHMap, siteName);
 
 //        for (HashMap<String, String> hm : rssDataHMap) {
 //            System.out.println(hm);
