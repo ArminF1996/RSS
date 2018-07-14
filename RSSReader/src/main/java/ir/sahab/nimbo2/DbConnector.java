@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class DbConnector {
 
-  private static String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
+  private  static String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
       + "&useUnicode=true&characterEncoding=utf-8";
   private static String userName = "armin";
   private static String password = "nimroo";
@@ -20,23 +20,23 @@ public class DbConnector {
           +
           " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
 
-  public static void setPassword(String passWord) {
-    DbConnector.password = passWord;
+  public void setPassword(String password) {
+    DbConnector.password = password;
   }
 
-  public static String getDbUrl() {
+  public String getDbUrl() {
     return dbUrl;
   }
 
-  public static void setDbUrl(String dbUrl) {
+  public void setDbUrl(String dbUrl) {
     DbConnector.dbUrl = dbUrl;
   }
 
-  public static String getUserName() {
+  public String getUserName() {
     return userName;
   }
 
-  public static void setUserName(String userName) {
+  public void setUserName(String userName) {
     DbConnector.userName = userName;
   }
 
