@@ -77,9 +77,10 @@ final class Client {
 
     // todo get site's config
 
-    if (rssData.downloadRss(rssUrl, siteName) && DbConnector.addSite(rssUrl, siteName, ""))
-      System.out.println("action finished successfully.");
-    else System.out.println("something wrong!");
+    DbConnector.addSite(rssUrl, siteName, "");
+
+    //todo add RSS data to db
+
   }
 
   /** with this method, the clients can updating the database. */
