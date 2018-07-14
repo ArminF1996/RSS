@@ -42,32 +42,15 @@ public class DbConnector {
      *
      * @return the result of this commands.
      */
-    public void createEntities() {
+    public static void createEntities() throws SQLException {
 
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(dbUrl, userName, passWord);
-
-            try {
-                PreparedStatement siteEntity = connection.prepareStatement(createSiteEntity);
-                siteEntity.executeUpdate();
-                PreparedStatement historyEntity = connection.prepareStatement(createNewsEntity);
-                historyEntity.executeUpdate();
-                PreparedStatement newsEntity = connection.prepareStatement(createHistoryEntity);
-                newsEntity.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try (Connection connection = DriverManager.getConnection(dbUrl, userName, passWord)) {
+            PreparedStatement siteEntity = connection.prepareStatement(createSiteEntity);
+            siteEntity.executeUpdate();
+            PreparedStatement historyEntity = connection.prepareStatement(createNewsEntity);
+            historyEntity.executeUpdate();
+            PreparedStatement newsEntity = connection.prepareStatement(createHistoryEntity);
+            newsEntity.executeUpdate();
         }
     }
 
@@ -79,46 +62,30 @@ public class DbConnector {
      * @param config   config of this site. TODO
      * @return return the result of adding new site.
      */
-    public void addSite(String rssUrl, String siteName, String config) {
-        Connection connection = null;
+    public void addSite(String rssUrl, String siteName, String config) throws SQLException {
 
-        try {
-            connection = DriverManager.getConnection(dbUrl, userName, passWord);
-            try {
-                PreparedStatement addSite =
-                        connection.prepareStatement(
-                                "INSERT  INTO sites  (siteName,rssUrl,configSettings) values (?,?,?)");
-                addSite.setString(1, siteName);
-                addSite.setString(2, rssUrl);
-                addSite.setString(3, config);
-                addSite.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try (Connection connection = DriverManager.getConnection(dbUrl, userName, passWord)) {
+            PreparedStatement addSite =
+                    connection.prepareStatement(
+                            "INSERT  INTO sites  (siteName,rssUrl,configSettings) values (?,?,?)");
+            addSite.setString(1, siteName);
+            addSite.setString(2, rssUrl);
+            addSite.setString(3, config);
+            addSite.executeUpdate();
         }
     }
 
     /**
      * with this method we can add news of specified site to db.
-     * @param hmArr array list of hashMap for each Item.
+     *
+     * @param hmArr    array list of hashMap for each Item.
      * @param siteName site's name witch choose by client.
-     * @return return the action result;
+     * @return return the action result.
      */
-    public boolean addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName) {
-        Boolean result = true;
-        Connection connection = null;
-        int siteID = 0;
-        try {
-            connection = DriverManager.getConnection(dbUrl, userName, passWord);
+    public void addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName) throws SQLException {
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, userName, passWord)) {
+            int siteID = 0;
             siteName = " \"" + siteName + "\"";
             PreparedStatement siteIdPrepareStatement = connection.prepareStatement("select siteID from sites where siteName=" + siteName);
             ResultSet resultSet = siteIdPrepareStatement.executeQuery();
@@ -130,23 +97,11 @@ public class DbConnector {
                 insertData.setString(1, hm.get("link"));
                 insertData.setInt(2, siteID);
                 insertData.setString(3, hm.get("title"));
-                insertData.setString(4,hm.get("pubDate"));
+                insertData.setString(4, hm.get("pubDate"));
                 insertData.setString(5, "test");
 
                 insertData.executeUpdate();
             }
-        } catch (SQLException e) {
-            result = false;
-            e.printStackTrace();
-        } finally {
-            try {
-            if(connection != null)
-                connection.close();
-            } catch (SQLException e) {
-                result = false;
-                e.printStackTrace();
-            }
         }
-        return result;
     }
 }

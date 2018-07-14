@@ -1,5 +1,6 @@
 package ir.sahab.nimbo2;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -83,16 +84,18 @@ final class Client {
 
         // todo get site's config
 
-        dbConnector.addSite(rssUrl, siteName, "");
+        try {
+            dbConnector.addSite(rssUrl, siteName, "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
 
-        dbConnector.addNewsForSite(rssDataHMap, siteName);
-
-//        for (HashMap<String, String> hm : rssDataHMap) {
-//            System.out.println(hm);
-//        }
-
-
+        try {
+            dbConnector.addNewsForSite(rssDataHMap, siteName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //todo add RSS data to db
 
