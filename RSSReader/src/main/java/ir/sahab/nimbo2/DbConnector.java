@@ -10,11 +10,13 @@ public class DbConnector {
     private static String userName = "armin";
     private static String passWord = "nimroo";
     private static String createSiteEntity =
-            "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8, rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
+            "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8," +
+                    " rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
     private static String createHistoryEntity =
             "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
     private static String createNewsEntity =
-            "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int, title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
+            "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int," +
+                    " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
 
     public static void setDbUrl(String dbUrl) {
         DbConnector.dbUrl = dbUrl;
