@@ -84,6 +84,12 @@ final class Client {
         DbConnector.addSite(rssUrl, siteName, "");
         ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
 
+//        DbConnector.addNewsForSite(rssDataHMap, siteName);
+
+//        for (HashMap<String, String> hm : rssDataHMap) {
+//            System.out.println(hm);
+//        }
+
 
 
         //todo add RSS data to db
