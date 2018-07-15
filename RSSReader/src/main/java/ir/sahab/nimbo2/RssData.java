@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,61 +14,23 @@ import java.util.HashMap;
 
 class RssData {
 
-  ArrayList<HashMap<String, String>> getRssData(String link) {
+  ArrayList<HashMap<String, String>> getRssData(String link)
+      throws ParserConfigurationException, IOException, SAXException {
     ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
     DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder domBuilder;
-    try {
-      domBuilder = domBuilderFactory.newDocumentBuilder();
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-      return null;
-    }
-    Document domTree;
-    try {
-      domTree = domBuilder.parse(new URL(link).openStream());
-    } catch (SAXException | IOException e) {
-      e.printStackTrace();
-      return null;
-    }
+    DocumentBuilder domBuilder = domBuilderFactory.newDocumentBuilder();
+    Document domTree = domBuilder.parse(new URL(link).openStream());
     for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
       rssDataMap.add(new HashMap<>());
       for (int j = 0;
           j < domTree.getElementsByTagName("item").item(i).getChildNodes().getLength();
           j++) {
         if (checkTag(domTree, i, j, "title")) {
-          rssDataMap
-              .get(i)
-              .put(
-                  "title",
-                  domTree
-                      .getElementsByTagName("item")
-                      .item(i)
-                      .getChildNodes()
-                      .item(j)
-                      .getTextContent());
+          rssDataMap.get(i).put("title", contentOfNode(domTree, i, j));
         } else if (checkTag(domTree, i, j, "link")) {
-          rssDataMap
-              .get(i)
-              .put(
-                  "link",
-                  domTree
-                      .getElementsByTagName("item")
-                      .item(i)
-                      .getChildNodes()
-                      .item(j)
-                      .getTextContent());
+          rssDataMap.get(i).put("link", contentOfNode(domTree, i, j));
         } else if (checkTag(domTree, i, j, "pubDate")) {
-          rssDataMap
-              .get(i)
-              .put(
-                  "pubDate",
-                  domTree
-                      .getElementsByTagName("item")
-                      .item(i)
-                      .getChildNodes()
-                      .item(j)
-                      .getTextContent());
+          rssDataMap.get(i).put("pubDate", contentOfNode(domTree, i, j));
         }
       }
     }
@@ -82,5 +45,14 @@ class RssData {
         .item(itemNodeNumber)
         .toString()
         .contains(tag);
+  }
+
+  private String contentOfNode(Document domTree, int domNodeNumber, int itemNodeNumber) {
+    return domTree
+        .getElementsByTagName("item")
+        .item(domNodeNumber)
+        .getChildNodes()
+        .item(itemNodeNumber)
+        .getTextContent();
   }
 }
