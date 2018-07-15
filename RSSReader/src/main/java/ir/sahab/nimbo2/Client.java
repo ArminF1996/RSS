@@ -9,7 +9,6 @@ final class Client {
 
   private Scanner reader;
   private String clientName;
-  private RssData rssData;
   private DbConnector dbConnector;
 
   /**
@@ -17,12 +16,9 @@ final class Client {
    *
    * @param clientName each client must have a name.
    */
-  Client(String clientName) {
-
+  public Client(String clientName) {
     this.clientName = clientName;
     reader = new Scanner(System.in);
-    rssData = new RssData();
-    dbConnector = new DbConnector();
     this.start();
   }
 
@@ -40,6 +36,17 @@ final class Client {
    * client activity for more info.
    */
   private void start() {
+    System.out.println("please enter username of db.");
+    String userName = reader.next();
+    System.out.println("please enter password of db.");
+    String password = reader.next();
+
+    dbConnector = new DbConnector(userName, password);
+    try {
+      dbConnector.createEntities();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
     boolean flag = true;
 
@@ -81,7 +88,6 @@ final class Client {
 
     System.out.println("choose a name for this URL.\n");
     String siteName = reader.next().toLowerCase();
-
     // todo get site's config
 
     try {
@@ -89,15 +95,11 @@ final class Client {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
-
     try {
-      dbConnector.addNewsForSite(rssDataHMap, siteName);
+      dbConnector.addNewsForSite(rssUrl, siteName);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
-    //todo add RSS data to db
 
   }
 

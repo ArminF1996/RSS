@@ -4,24 +4,34 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DbConnector {
+class DbConnector {
 
-  private  static String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
+  private String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
       + "&useUnicode=true&characterEncoding=utf-8";
-  private static String userName = "armin";
-  private static String password = "nimroo";
-  private static String createSiteEntity =
-      "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8,"
-          + "rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
-  private static String createHistoryEntity =
-      "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
-  private static String createNewsEntity =
-      "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int,"
-          +
-          " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
+  private String userName;
+  private String password;
+  private String createSiteEntity;
+  private String createHistoryEntity;
+  private String createNewsEntity;
+  private RssData rssData;
+
+  DbConnector(String userName , String password) {
+    rssData = new RssData();
+    createSiteEntity =
+        "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8,"
+            + "rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
+    createHistoryEntity =
+        "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
+    createNewsEntity =
+        "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int,"
+            +
+            " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
+    this.userName = userName;
+    this.password = password;
+  }
 
   public void setPassword(String password) {
-    DbConnector.password = password;
+    this.password = password;
   }
 
   public String getDbUrl() {
@@ -29,7 +39,7 @@ public class DbConnector {
   }
 
   public void setDbUrl(String dbUrl) {
-    DbConnector.dbUrl = dbUrl;
+    this.dbUrl = dbUrl;
   }
 
   public String getUserName() {
@@ -37,7 +47,7 @@ public class DbConnector {
   }
 
   public void setUserName(String userName) {
-    DbConnector.userName = userName;
+    this.userName = userName;
   }
 
   /**
@@ -46,7 +56,7 @@ public class DbConnector {
    *
    * @return the result of this commands.
    */
-  public static void createEntities() throws SQLException {
+  public void createEntities() throws SQLException {
 
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement siteEntity = connection.prepareStatement(createSiteEntity);
@@ -82,13 +92,13 @@ public class DbConnector {
   /**
    * with this method we can add news of specified site to db.
    *
-   * @param hmArr array list of hashMap for each Item.
+   * @param rssUrl url of RSS page.
    * @param siteName site's name witch choose by client.
    * @return return the action result.
    */
-  public void addNewsForSite(ArrayList<HashMap<String, String>> hmArr, String siteName)
+  public void addNewsForSite(String rssUrl, String siteName)
       throws SQLException {
-
+      ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       int siteID = 0;
       siteName = " \"" + siteName + "\"";
@@ -97,14 +107,14 @@ public class DbConnector {
       ResultSet resultSet = siteIdPrepareStatement.executeQuery();
       resultSet.next();
       siteID = resultSet.getInt(1);
-      for (HashMap<String, String> hm : hmArr) {
+      for (HashMap<String, String> tmp : rssDataHMap) {
         PreparedStatement insertData = connection.prepareStatement(
             "INSERT  INTO news(link,siteID,title,publishDate,body) values (?,?,?,?,?)");
 
-        insertData.setString(1, hm.get("link"));
+        insertData.setString(1, tmp.get("link"));
         insertData.setInt(2, siteID);
-        insertData.setString(3, hm.get("title"));
-        insertData.setString(4, hm.get("pubDate"));
+        insertData.setString(3, tmp.get("title"));
+        insertData.setString(4, tmp.get("pubDate"));
         insertData.setString(5, "test");
 
         insertData.executeUpdate();
