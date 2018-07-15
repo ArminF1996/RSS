@@ -9,8 +9,9 @@ import org.xml.sax.SAXException;
 
 class DataBase {
 
-  private String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
-      + "&useUnicode=true&characterEncoding=utf-8";
+  private String dbUrl =
+      "jdbc:mysql://localhost:3306/omid?autoReconnect=true&useSSL=true"
+          + "&useUnicode=true&characterEncoding=utf-8";
   private String userName;
   private String password;
   private String createSiteEntity;
@@ -27,8 +28,7 @@ class DataBase {
         "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
     createNewsEntity =
         "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int,"
-            +
-            " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
+            + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
     this.userName = userName;
     this.password = password;
   }
@@ -105,14 +105,15 @@ class DataBase {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       int siteID = 0;
       siteName = " \"" + siteName + "\"";
-      PreparedStatement siteIdPrepareStatement = connection
-          .prepareStatement("select siteID from sites where siteName=" + siteName);
+      PreparedStatement siteIdPrepareStatement =
+          connection.prepareStatement("select siteID from sites where siteName=" + siteName);
       ResultSet resultSet = siteIdPrepareStatement.executeQuery();
       resultSet.next();
       siteID = resultSet.getInt(1);
       for (HashMap<String, String> tmp : rssDataHMap) {
-        PreparedStatement insertData = connection.prepareStatement(
-            "INSERT  INTO news(link,siteID,title,publishDate,body) values (?,?,?,?,?)");
+        PreparedStatement insertData =
+            connection.prepareStatement(
+                "INSERT  INTO news(link,siteID,title,publishDate,body) values (?,?,?,?,?)");
 
         insertData.setString(1, tmp.get("link"));
         insertData.setInt(2, siteID);
@@ -121,6 +122,18 @@ class DataBase {
         insertData.setString(5, "test");
 
         insertData.executeUpdate();
+      }
+    }
+  }
+
+  void searchByTitle(String partOfTitle) throws SQLException {
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchTitles =
+          connection.prepareStatement(
+              "select * from news where title like '%" + partOfTitle + "%';");
+      ResultSet searchResult = searchTitles.executeQuery();
+      while (searchResult.next()){
+        System.out.println(searchResult.getString("link"));
       }
     }
   }

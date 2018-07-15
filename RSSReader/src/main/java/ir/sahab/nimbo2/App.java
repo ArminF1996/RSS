@@ -1,6 +1,8 @@
 package ir.sahab.nimbo2;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,7 +10,7 @@ import org.jsoup.select.Elements;
 
 public class App {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SQLException {
     Client client1 = new Client("console");
 
     //example

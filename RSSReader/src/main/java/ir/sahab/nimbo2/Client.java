@@ -1,6 +1,7 @@
 package ir.sahab.nimbo2;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ final class Client {
    *
    * @param clientName each client must have a name.
    */
-  public Client(String clientName) {
+  public Client(String clientName) throws SQLException {
     this.clientName = clientName;
     reader = new Scanner(System.in);
     this.start();
@@ -38,7 +39,7 @@ final class Client {
    * this method create for handling the state of client activity. you can see the state diagram for
    * client activity for more info.
    */
-  private void start() {
+  private void start() throws SQLException {
     System.out.println("please enter username of db.");
     String userName = reader.next();
     System.out.println("please enter password of db.");
@@ -82,9 +83,7 @@ final class Client {
     }
   }
 
-  /**
-   * with this method,the clients can adding new sites to application.
-   */
+  /** with this method,the clients can adding new sites to application. */
   private void addSite() {
     System.out.println("Write URL of RSS page.\n");
     String rssUrl = reader.next().toLowerCase();
@@ -111,12 +110,9 @@ final class Client {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
   }
 
-  /**
-   * with this method, the clients can updating the database.
-   */
+  /** with this method, the clients can updating the database. */
   private void update() {
     // todo update db
   }
@@ -125,7 +121,7 @@ final class Client {
    * this method create for handling the state of client activity. you can see the state diagram for
    * client activity for more info.
    */
-  private void viewMode() {
+  private void viewMode() throws SQLException {
 
     boolean flag = true;
 
@@ -162,9 +158,7 @@ final class Client {
     }
   }
 
-  /**
-   * with this method, the clients can see the 10 latest news from one news agency.
-   */
+  /** with this method, the clients can see the 10 latest news from one news agency. */
   private void latest() {
     // todo show sites with id
     System.out.println("write site id.");
@@ -195,7 +189,7 @@ final class Client {
    * this method create for handling the state of client activity. you can see the state diagram for
    * client activity for more info.
    */
-  private void searchMode() {
+  private void searchMode() throws SQLException {
 
     boolean flag = true;
 
@@ -223,21 +217,17 @@ final class Client {
     }
   }
 
-  /**
-   * with this method, the clients can search the news by some string in the news body.
-   */
+  /** with this method, the clients can search the news by some string in the news body. */
   private void searchByBody() {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
     // todo show all news that contain this string
   }
 
-  /**
-   * with this method, the clients can search the news by some string in the news title.
-   */
-  private void searchByTitle() {
+  /** with this method, the clients can search the news by some string in the news title. */
+  private void searchByTitle() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
-    // todo show all news that contain this string in title with
+    dbConnector.searchByTitle(input);
   }
 }
