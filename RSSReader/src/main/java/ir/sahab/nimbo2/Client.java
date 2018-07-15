@@ -148,10 +148,10 @@ final class Client {
    * with this method, the clients can see the 10 latest news from one news agency.
    */
   private void latest() {
-    // todo show sites with id
+    // TODO show sites with id
     System.out.println("write site id.");
     int id = reader.nextInt();
-    // todo show latest news
+    // TODO show latest news
   }
 
   /**
@@ -159,10 +159,10 @@ final class Client {
    * specified news agency.
    */
   private void history() {
-    // todo show sites with id
+    // TODO show sites with id
     System.out.println("write site id.");
     int id = reader.nextInt();
-    // todo show history of all day for site
+    // TODO show history of all day for site
   }
 
   /**
@@ -211,7 +211,7 @@ final class Client {
   private void searchByBody() {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
-    // todo show all news that contain this string
+    // TODO show all news that contain this string
   }
 
   /**
