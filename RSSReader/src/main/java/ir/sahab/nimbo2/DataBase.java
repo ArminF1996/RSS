@@ -1,10 +1,13 @@
 package ir.sahab.nimbo2;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
-class DbConnector {
+class DataBase {
 
   private String dbUrl = "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
       + "&useUnicode=true&characterEncoding=utf-8";
@@ -15,7 +18,7 @@ class DbConnector {
   private String createNewsEntity;
   private RssData rssData;
 
-  DbConnector(String userName , String password) {
+  DataBase(String userName, String password) {
     rssData = new RssData();
     createSiteEntity =
         "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8,"
@@ -97,8 +100,8 @@ class DbConnector {
    * @return return the action result.
    */
   public void addNewsForSite(String rssUrl, String siteName)
-      throws SQLException {
-      ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
+      throws SQLException, IOException, SAXException, ParserConfigurationException {
+    ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       int siteID = 0;
       siteName = " \"" + siteName + "\"";

@@ -1,15 +1,18 @@
 package ir.sahab.nimbo2;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 final class Client {
 
   private Scanner reader;
   private String clientName;
-  private DbConnector dbConnector;
+  private DataBase dbConnector;
 
   /**
    * this is constructor of Client class.
@@ -41,7 +44,7 @@ final class Client {
     System.out.println("please enter password of db.");
     String password = reader.next();
 
-    dbConnector = new DbConnector(userName, password);
+    dbConnector = new DataBase(userName, password);
     try {
       dbConnector.createEntities();
     } catch (SQLException e) {
@@ -96,7 +99,15 @@ final class Client {
       e.printStackTrace();
     }
     try {
-      dbConnector.addNewsForSite(rssUrl, siteName);
+      try {
+        dbConnector.addNewsForSite(rssUrl, siteName);
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (SAXException e) {
+        e.printStackTrace();
+      } catch (ParserConfigurationException e) {
+        e.printStackTrace();
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
