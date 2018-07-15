@@ -11,75 +11,59 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class RssData {
+class RssData {
 
-  public ArrayList<HashMap<String, String>> getRssData(String link) {
-    ArrayList<HashMap<String, String>> rssDataHMap = new ArrayList<HashMap<String, String>>();
-    String url = link;
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = null;
+  ArrayList<HashMap<String, String>> getRssData(String link) {
+    ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
+    DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder domBuilder;
     try {
-      db = dbf.newDocumentBuilder();
+      domBuilder = domBuilderFactory.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
       e.printStackTrace();
       return null;
     }
-    Document doc = null;
+    Document domTree;
     try {
-      doc = db.parse(new URL(url).openStream());
-    } catch (SAXException e) {
-      e.printStackTrace();
-      return null;
-    } catch (IOException e) {
+      domTree = domBuilder.parse(new URL(link).openStream());
+    } catch (SAXException | IOException e) {
       e.printStackTrace();
       return null;
     }
-    for (int i = 0; i < doc.getElementsByTagName("item").getLength(); i++) {
-      rssDataHMap.add(new HashMap<String, String>());
+    for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
+      rssDataMap.add(new HashMap<>());
       for (int j = 0;
-          j < doc.getElementsByTagName("item").item(i).getChildNodes().getLength();
+          j < domTree.getElementsByTagName("item").item(i).getChildNodes().getLength();
           j++) {
-        if (doc.getElementsByTagName("item")
-            .item(i)
-            .getChildNodes()
-            .item(j)
-            .toString()
-            .contains("title")) {
-          rssDataHMap
+        if (checkTag(domTree, i, j, "title")) {
+          rssDataMap
               .get(i)
               .put(
                   "title",
-                  doc.getElementsByTagName("item")
+                  domTree
+                      .getElementsByTagName("item")
                       .item(i)
                       .getChildNodes()
                       .item(j)
                       .getTextContent());
-        } else if (doc.getElementsByTagName("item")
-            .item(i)
-            .getChildNodes()
-            .item(j)
-            .toString()
-            .contains("link")) {
-          rssDataHMap
+        } else if (checkTag(domTree, i, j, "link")) {
+          rssDataMap
               .get(i)
               .put(
                   "link",
-                  doc.getElementsByTagName("item")
+                  domTree
+                      .getElementsByTagName("item")
                       .item(i)
                       .getChildNodes()
                       .item(j)
                       .getTextContent());
-        } else if (doc.getElementsByTagName("item")
-            .item(i)
-            .getChildNodes()
-            .item(j)
-            .toString()
-            .contains("pubDate")) {
-          rssDataHMap
+        } else if (checkTag(domTree, i, j, "pubDate")) {
+          rssDataMap
               .get(i)
               .put(
                   "pubDate",
-                  doc.getElementsByTagName("item")
+                  domTree
+                      .getElementsByTagName("item")
                       .item(i)
                       .getChildNodes()
                       .item(j)
@@ -87,6 +71,16 @@ public class RssData {
         }
       }
     }
-    return rssDataHMap;
+    return rssDataMap;
+  }
+
+  private boolean checkTag(Document domTree, int domNodeNumber, int itemNodeNumber, String tag) {
+    return domTree
+        .getElementsByTagName("item")
+        .item(domNodeNumber)
+        .getChildNodes()
+        .item(itemNodeNumber)
+        .toString()
+        .contains(tag);
   }
 }
