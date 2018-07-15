@@ -3,14 +3,18 @@ package ir.sahab.nimbo2;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
 class DataBase {
 
   private String dbUrl =
-      "jdbc:mysql://localhost:3306/omid?autoReconnect=true&useSSL=true"
+      "jdbc:mysql://localhost:3306/nimroo?autoReconnect=true&useSSL=true"
           + "&useUnicode=true&characterEncoding=utf-8";
   private String userName;
   private String password;
@@ -103,13 +107,18 @@ class DataBase {
       throws SQLException, IOException, SAXException, ParserConfigurationException {
     ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      int siteID = 0;
       siteName = " \"" + siteName + "\"";
       PreparedStatement siteIdPrepareStatement =
-          connection.prepareStatement("select siteID from sites where siteName=" + siteName);
+          connection.prepareStatement(
+              "select siteID,configSettings from sites where siteName=" + siteName);
       ResultSet resultSet = siteIdPrepareStatement.executeQuery();
       resultSet.next();
-      siteID = resultSet.getInt(1);
+
+      int siteID = resultSet.getInt(1);
+      String config = resultSet.getString(2);
+      String divKey = (new ArrayList<String>(Arrays.asList(config.split("/")))).get(0);
+      String divVal = (new ArrayList<String>(Arrays.asList(config.split("/")))).get(1);
+
       for (HashMap<String, String> tmp : rssDataHMap) {
         PreparedStatement insertData =
             connection.prepareStatement(
@@ -119,8 +128,14 @@ class DataBase {
         insertData.setInt(2, siteID);
         insertData.setString(3, tmp.get("title"));
         insertData.setString(4, tmp.get("pubDate"));
-        insertData.setString(5, "test");
 
+        Document doc = Jsoup.connect(tmp.get("link")).get();
+        Elements rows = doc.getElementsByAttributeValue(divKey, divVal);
+        String body = "main body of news not found!";
+        if (rows != null && rows.first() != null) {
+          body = rows.first().text();
+        }
+        insertData.setString(5, body);
         insertData.executeUpdate();
       }
     }
@@ -132,7 +147,7 @@ class DataBase {
           connection.prepareStatement(
               "select * from news where title like '%" + partOfTitle + "%';");
       ResultSet searchResult = searchTitles.executeQuery();
-      while (searchResult.next()){
+      while (searchResult.next()) {
         System.out.println(searchResult.getString("link"));
       }
     }

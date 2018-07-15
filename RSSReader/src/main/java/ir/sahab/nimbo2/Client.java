@@ -86,9 +86,12 @@ final class Client {
 
     System.out.println("choose a name for this URL.\n");
     String siteName = reader.next().toLowerCase();
-    // todo get site's config
 
-    dbConnector.addSite(rssUrl, siteName, "");
+    System.out.println("enter the site config (like \"class/body\").\n");
+    reader.nextLine();
+    String siteConfig = reader.nextLine().toLowerCase();
+
+    dbConnector.addSite(rssUrl, siteName, siteConfig);
     dbConnector.addNewsForSite(rssUrl, siteName);
 
   }
