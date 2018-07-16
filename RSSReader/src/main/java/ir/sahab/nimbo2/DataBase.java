@@ -2,6 +2,8 @@ package ir.sahab.nimbo2;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +130,13 @@ class DataBase {
         insertData.setString(1, tmp.get("link"));
         insertData.setInt(2, siteID);
         insertData.setString(3, tmp.get("title"));
-        insertData.setString(4, tmp.get("pubDate"));
+
+        java.util.Date pubDate = getPubDate(tmp.get("pubDate"));
+        java.sql.Timestamp sqlDate = null;
+        if (pubDate != null) {
+          sqlDate = new java.sql.Timestamp(pubDate.getTime());
+        }
+        insertData.setTimestamp(4, sqlDate);
 
         Document doc = Jsoup.connect(tmp.get("link")).get();
         Elements rows = doc.getElementsByAttributeValue(divKey, divVal);
@@ -203,5 +211,37 @@ class DataBase {
   void printTodayNewsNumberForEachSite() {
     Date today = Date.valueOf(LocalDate.now());
     System.out.println(today);
+  }
+
+  /**
+   * in this method, we convert date from string type to date type.
+   * @param dateString  string that contain date.
+   * @return  return date that contain pubDate.
+   */
+  private java.util.Date getPubDate(String dateString) {
+    System.out.println(dateString);
+    ArrayList<SimpleDateFormat> formats = new ArrayList<>();
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm"));
+    formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss"));
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss"));
+    formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"));
+    java.util.Date date = null;
+    Boolean flag = false;
+    for (SimpleDateFormat formatter : formats) {
+      try {
+        date = formatter.parse(dateString);
+        if (date != null) {
+          flag = true;
+          break;
+        }
+      } catch (ParseException e) {
+
+      }
+    }
+    System.out.println(date+ "\n\n");
+    if (!flag) {
+      return null;
+    }
+    return date;
   }
 }
