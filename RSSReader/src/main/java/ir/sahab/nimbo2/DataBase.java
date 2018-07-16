@@ -26,74 +26,24 @@ class DataBase {
   private String createNewsEntity;
   private RssData rssData;
 
+  /**
+   * TODO add to DatabaseManager class not added line remain
+   */
   DataBase(String userName, String password) {
     rssData = new RssData();
-    createSiteEntity =
-        "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8,"
-            + "rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
-    createHistoryEntity =
-        "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
-    createNewsEntity =
-        "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int,"
-            + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
-    this.userName = userName;
-    this.password = password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getDbUrl() {
-    return dbUrl;
-  }
-
-  public void setDbUrl(String dbUrl) {
-    this.dbUrl = dbUrl;
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
   }
 
   /**
-   * whit this method, we can create database entities. you can see ERD diagram for more
-   * information.
+   * TODO add to DatabaseManager class not added line remain
    */
   public void createEntities() throws SQLException {
-
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement siteEntity = connection.prepareStatement(createSiteEntity);
-      siteEntity.executeUpdate();
-      PreparedStatement historyEntity = connection.prepareStatement(createNewsEntity);
-      historyEntity.executeUpdate();
-      PreparedStatement newsEntity = connection.prepareStatement(createHistoryEntity);
-      newsEntity.executeUpdate();
-    }
   }
 
   /**
-   * with this method, the clients can add new site to db.
-   *
-   * @param rssUrl url of news agency's rssPage.
-   * @param siteName news agency site's name.
-   * @param config config of this site.
+   * TODO add to SiteRepo class not added line remain
    */
   public void addSite(String rssUrl, String siteName, String config) throws SQLException {
 
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement addSite =
-          connection.prepareStatement(
-              "INSERT  INTO sites  (siteName,rssUrl,configSettings) values (?,?,?)");
-      addSite.setString(1, siteName);
-      addSite.setString(2, rssUrl);
-      addSite.setString(3, config);
-      addSite.executeUpdate();
-    }
   }
 
   /**

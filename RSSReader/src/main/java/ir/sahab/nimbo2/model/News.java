@@ -13,17 +13,17 @@ public class News {
   String body;
   String link;
 
-  public News(int siteID, String title, Date publishDay, String body, String link) {
+  public News(int siteID, String title, Date publishDay, String link) {
     this.siteID = siteID;
     this.title = title;
     this.publishDay = publishDay;
-    this.body = body;
     this.link = link;
   }
 
   public News(int siteID, int newsID, String title, Date publishDay, String body, String link) {
-    this(siteID, title, publishDay, body, link);
+    this(siteID, title, publishDay, link);
     this.newsID = newsID;
+    this.body = body;
   }
 
   public int getNewsID() {
