@@ -63,8 +63,6 @@ class DataBase {
   /**
    * whit this method, we can create database entities. you can see ERD diagram for more
    * information.
-   *
-   * @return the result of this commands.
    */
   public void createEntities() throws SQLException {
 
@@ -83,8 +81,7 @@ class DataBase {
    *
    * @param rssUrl url of news agency's rssPage.
    * @param siteName news agency site's name.
-   * @param config config of this site. TODO
-   * @return return the result of adding new site.
+   * @param config config of this site.
    */
   public void addSite(String rssUrl, String siteName, String config) throws SQLException {
 
@@ -104,7 +101,6 @@ class DataBase {
    *
    * @param rssUrl url of RSS page.
    * @param siteName site's name witch choose by client.
-   * @return return the action result.
    */
   public void addNewsForSite(String rssUrl, String siteName)
       throws SQLException, IOException, SAXException, ParserConfigurationException {
