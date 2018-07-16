@@ -219,7 +219,6 @@ class DataBase {
    * @return  return date that contain pubDate.
    */
   private java.util.Date getPubDate(String dateString) {
-    System.out.println(dateString);
     ArrayList<SimpleDateFormat> formats = new ArrayList<>();
     formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm"));
     formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss"));
@@ -238,7 +237,6 @@ class DataBase {
 
       }
     }
-    System.out.println(date+ "\n\n");
     if (!flag) {
       return null;
     }

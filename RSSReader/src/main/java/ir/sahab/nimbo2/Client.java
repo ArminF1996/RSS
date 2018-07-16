@@ -88,7 +88,7 @@ final class Client {
 
   /** with this method,the clients can adding new sites to application. */
   private void addSite()
-      throws SQLException, ParserConfigurationException, SAXException, IOException {
+      throws SQLException{
     System.out.println("Write URL of RSS page.\n");
     String rssUrl = reader.next().toLowerCase();
 
