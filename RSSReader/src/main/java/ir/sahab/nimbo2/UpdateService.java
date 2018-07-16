@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UpdateService implements Runnable {
+
   DataBase dbConnector;
   ExecutorService threadPoolForUpdaters;
   ConcurrentHashMap<String, String> listOfSitesAndRssUrl;
@@ -45,6 +46,7 @@ public class UpdateService implements Runnable {
   }
 
   class UpdateSite implements Runnable {
+
     String rssUrl;
     String siteName;
 

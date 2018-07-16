@@ -211,8 +211,9 @@ class DataBase {
 
   /**
    * in this method, we convert date from string type to date type.
-   * @param dateString  string that contain date.
-   * @return  return date that contain pubDate.
+   *
+   * @param dateString string that contain date.
+   * @return return date that contain pubDate.
    */
   private java.util.Date getPubDate(String dateString) {
     ArrayList<SimpleDateFormat> formats = new ArrayList<>();

@@ -86,9 +86,11 @@ final class Client {
     updateThread.interrupt();
   }
 
-  /** with this method,the clients can adding new sites to application. */
+  /**
+   * with this method,the clients can adding new sites to application.
+   */
   private void addSite()
-      throws SQLException{
+      throws SQLException {
     System.out.println("Write URL of RSS page.\n");
     String rssUrl = reader.next().toLowerCase();
 
@@ -103,7 +105,9 @@ final class Client {
     updateService.addSiteForUpdate(rssUrl, siteName);
   }
 
-  /** with this method, the clients can updating the database. */
+  /**
+   * with this method, the clients can updating the database.
+   */
   private void update() {
     synchronized (LOCKFORWAITANDNOTIFY) {
       LOCKFORWAITANDNOTIFY.notify();
@@ -151,7 +155,9 @@ final class Client {
     }
   }
 
-  /** with this method, the clients can see the 10 latest news from one news agency. */
+  /**
+   * with this method, the clients can see the 10 latest news from one news agency.
+   */
   private void latest() throws SQLException {
     dbConnector.printSitesId();
     System.out.println("write site id.");
@@ -210,14 +216,18 @@ final class Client {
     }
   }
 
-  /** with this method, the clients can search the news by some string in the news body. */
+  /**
+   * with this method, the clients can search the news by some string in the news body.
+   */
   private void searchByBody() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
     dbConnector.searchInBody(input);
   }
 
-  /** with this method, the clients can search the news by some string in the news title. */
+  /**
+   * with this method, the clients can search the news by some string in the news title.
+   */
   private void searchByTitle() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
