@@ -1,9 +1,10 @@
 package ir.sahab.nimbo2.model;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Date;
 
-public class News implements NewsRepository {
+public class News {
 
   int siteID;
   int newsID;
@@ -12,23 +13,60 @@ public class News implements NewsRepository {
   String body;
   String link;
 
-  @Override
-  public void addNews() {
-
+  public News(int siteID, String title, Date publishDay, String body, String link) {
+    this.siteID = siteID;
+    this.title = title;
+    this.publishDay = publishDay;
+    this.body = body;
+    this.link = link;
   }
 
-  @Override
-  public void remove() {
-
+  public News(int siteID, int newsID, String title, Date publishDay, String body, String link) {
+    this(siteID, title, publishDay, body, link);
+    this.newsID = newsID;
   }
 
-  @Override
-  public ResultSet searchByTitle() {
-    return null;
+  public int getNewsID() {
+    return newsID;
   }
 
-  @Override
-  public ResultSet searchByBody() {
-    return null;
+  public int getSiteID() {
+    return siteID;
+  }
+
+  public void setSiteID(int siteID) {
+    this.siteID = siteID;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public Date getPublishDay() {
+    return publishDay;
+  }
+
+  public void setPublishDay(Date publishDay) {
+    this.publishDay = publishDay;
+  }
+
+  public String getBody() {
+    return body;
+  }
+
+  public void setBody(String body) {
+    this.body = body;
+  }
+
+  public String getLink() {
+    return link;
+  }
+
+  public void setLink(String link) {
+    this.link = link;
   }
 }

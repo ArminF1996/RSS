@@ -1,46 +1,48 @@
 package ir.sahab.nimbo2.model;
 
-import java.sql.ResultSet;
-
-public class Site implements SiteRepository{
+public class Site {
 
   int siteID;
   String siteName;
   String rssUrl;
   String configSettings;
 
-  @Override
-  public String add() {
-    return null;
+  public Site(String siteName, String rssUrl, String configSettings) {
+    this.siteName = siteName;
+    this.rssUrl = rssUrl;
+    this.configSettings = configSettings;
   }
 
-  @Override
-  public String remove() {
-    return null;
+  public Site(int siteID, String siteName, String rssUrl, String configSettings) {
+    this(siteName, rssUrl, configSettings);
+    this.siteID = siteID;
   }
 
-  @Override
-  public String updateNewsOfSite() {
-    return null;
+  public int getSiteID() {
+    return siteID;
   }
 
-  @Override
-  public String updateConfigOfSite() {
-    return null;
+  public String getSiteName() {
+    return siteName;
   }
 
-  @Override
-  public ResultSet getNumberOfNewsForToday() {
-    return null;
+  public void setSiteName(String siteName) {
+    this.siteName = siteName;
   }
 
-  @Override
-  public ResultSet getTenNewestNewsOfSite() {
-    return null;
+  public String getRssUrl() {
+    return rssUrl;
   }
 
-  @Override
-  public ResultSet getNumberOfNewsHistoryForPreviousDays() {
-    return null;
+  public void setRssUrl(String rssUrl) {
+    this.rssUrl = rssUrl;
+  }
+
+  public String getConfigSettings() {
+    return configSettings;
+  }
+
+  public void setConfigSettings(String configSettings) {
+    this.configSettings = configSettings;
   }
 }

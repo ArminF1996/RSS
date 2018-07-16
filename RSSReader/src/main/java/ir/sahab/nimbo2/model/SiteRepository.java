@@ -1,21 +1,35 @@
 package ir.sahab.nimbo2.model;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 
-public interface SiteRepository {
+public class SiteRepository {
 
-  String add();
+  String add(Connection connection){
+    return null;
+  }
+  String remove(Connection connection){
+    return null;
+  }
 
-  String remove();
+  String updateNewsOfSite(Connection connection){
+    return null;
+  }
 
-  String updateNewsOfSite();
+  String updateConfigOfSite(Connection connection){
+    return null;
+  }
 
-  String updateConfigOfSite();
+  ResultSet getNumberOfNewsForToday(Connection connection){
+    return null;
+  }
 
-  ResultSet getNumberOfNewsForToday();
+  ResultSet getTenNewestNewsOfSite(Connection connection){
+    return null;
+  }
 
-  ResultSet getTenNewestNewsOfSite();
-
-  ResultSet getNumberOfNewsHistoryForPreviousDays();
+  ResultSet getNumberOfNewsHistoryForPreviousDays(Connection connection){
+    return null;
+  }
 
 }

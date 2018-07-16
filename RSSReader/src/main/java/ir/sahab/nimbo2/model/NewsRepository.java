@@ -1,14 +1,23 @@
 package ir.sahab.nimbo2.model;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 
-public interface NewsRepository {
+public class NewsRepository {
 
-  void addNews();
+  void add(Connection connection){
 
-  void remove();
+  }
 
-  ResultSet searchByTitle();
+  void remove(Connection connection){
 
-  ResultSet searchByBody();
+  }
+
+  ResultSet searchByTitle(Connection connection, String str){
+    return null;
+  }
+
+  ResultSet searchByBody(Connection connection, String str){
+    return null;
+  }
 }
