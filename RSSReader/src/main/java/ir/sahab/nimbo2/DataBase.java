@@ -2,6 +2,7 @@ package ir.sahab.nimbo2;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -197,5 +198,10 @@ class DataBase {
         System.out.println(searchResult.getString("link"));
       }
     }
+  }
+
+  void printTodayNewsNumberForEachSite() {
+    Date today = Date.valueOf(LocalDate.now());
+    System.out.println(today);
   }
 }
