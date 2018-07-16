@@ -37,7 +37,8 @@ final class Client {
    * this method create for handling the state of client activity. you can see the state diagram for
    * client activity for more info.
    */
-  private void start() throws SQLException, IOException, SAXException, ParserConfigurationException {
+  private void start()
+      throws SQLException, IOException, SAXException, ParserConfigurationException {
     System.out.println("please enter username of db.");
     String userName = reader.next();
     System.out.println("please enter password of db.");
@@ -76,9 +77,7 @@ final class Client {
     }
   }
 
-  /**
-   * with this method,the clients can adding new sites to application.
-   */
+  /** with this method,the clients can adding new sites to application. */
   private void addSite()
       throws SQLException, ParserConfigurationException, SAXException, IOException {
     System.out.println("Write URL of RSS page.\n");
@@ -93,12 +92,9 @@ final class Client {
 
     dbConnector.addSite(rssUrl, siteName, siteConfig);
     dbConnector.addNewsForSite(rssUrl, siteName);
-
   }
 
-  /**
-   * with this method, the clients can updating the database.
-   */
+  /** with this method, the clients can updating the database. */
   private void update() {
     // todo update db
   }
@@ -144,14 +140,12 @@ final class Client {
     }
   }
 
-  /**
-   * with this method, the clients can see the 10 latest news from one news agency.
-   */
+  /** with this method, the clients can see the 10 latest news from one news agency. */
   private void latest() throws SQLException {
     dbConnector.printSitesId();
     System.out.println("write site id.");
     int id = reader.nextInt();
-    // TODO show latest news
+    dbConnector.printLatestNews(id);
   }
 
   /**
@@ -205,18 +199,14 @@ final class Client {
     }
   }
 
-  /**
-   * with this method, the clients can search the news by some string in the news body.
-   */
+  /** with this method, the clients can search the news by some string in the news body. */
   private void searchByBody() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
     dbConnector.searchInBody(input);
   }
 
-  /**
-   * with this method, the clients can search the news by some string in the news title.
-   */
+  /** with this method, the clients can search the news by some string in the news title. */
   private void searchByTitle() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();

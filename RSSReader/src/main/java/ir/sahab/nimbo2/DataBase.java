@@ -145,9 +145,9 @@ class DataBase {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchTitles =
           connection.prepareStatement(
-              "select * from news where title like '%" + partOfTitle + "%';");
+              "select * from news where title like '% " + partOfTitle + " %';");
       ResultSet searchResult = searchTitles.executeQuery();
-      if(searchResult.getRow() == 0){
+      if (searchResult.getRow() == 0) {
         System.out.println("no title contains this!");
       }
       while (searchResult.next()) {
@@ -159,11 +159,11 @@ class DataBase {
   void searchInBody(String partOfBody) throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchBodies =
-              connection.prepareStatement(
-                      "select * from news where body like '%" + partOfBody + "%';");
+          connection.prepareStatement(
+              "select * from news where body like '% " + partOfBody + " %';");
       ResultSet searchResult = searchBodies.executeQuery();
-      if(searchResult.getRow()==0){
-        System.out.println("none of the news contain what u typed!");
+      if (searchResult.getRow() == 0) {
+        System.out.println("none of the news contain what you typed!");
       }
       while (searchResult.next()) {
         System.out.println(searchResult.getString("link"));
@@ -173,15 +173,28 @@ class DataBase {
 
   void printSitesId() throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchBodies =
-              connection.prepareStatement(
-                      "select * from sites;");
+      PreparedStatement searchBodies = connection.prepareStatement("select * from sites;");
       ResultSet searchResult = searchBodies.executeQuery();
-      if(searchResult.getRow()==0){
-        System.out.println("none of the news contain what u typed!");
-      }
       while (searchResult.next()) {
-        System.out.println(searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
+        System.out.println(
+            searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
+      }
+    }
+  }
+
+  void printLatestNews(int siteId) throws SQLException {
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchBodies =
+          connection.prepareStatement(
+              "select * from news where siteID = " + siteId + " order by publishDate;");
+      ResultSet searchResult = searchBodies.executeQuery();
+      int printedSitesCounter = 0;
+      if (searchResult.getRow() == 0) {
+        System.out.println("no news in the given Id!");
+      }
+      while (searchResult.next() && printedSitesCounter < 10) {
+        printedSitesCounter++;
+        System.out.println(searchResult.getString("link"));
       }
     }
   }
