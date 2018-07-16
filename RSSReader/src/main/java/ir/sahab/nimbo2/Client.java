@@ -2,7 +2,6 @@ package ir.sahab.nimbo2;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Scanner;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
@@ -15,11 +14,6 @@ final class Client {
   private final Object LOCKFORWAITANDNOTIFY;
   private UpdateService updateService;
 
-  /**
-   * this is constructor of Client class.
-   *
-   * @param clientName each client must have a name.
-   */
   public Client(String clientName)
       throws SQLException, ParserConfigurationException, SAXException, IOException {
     this.clientName = clientName;
@@ -29,84 +23,32 @@ final class Client {
   }
 
   /**
-   * with this method we can get the client's name.
-   *
-   * @return clientName.
+   * TODO
+   * add to Terminal class
+   * not added line remain
    */
-  public String getClientName() {
-    return clientName;
-  }
-
-  /**
-   * this method create for handling the state of client activity. you can see the state diagram for
-   * client activity for more info.
-   */
-  private void start()
-      throws SQLException, IOException, SAXException, ParserConfigurationException {
-    System.out.println("please enter username of db.");
-    String userName = reader.next();
-    System.out.println("please enter password of db.");
-    String password = reader.next();
-
-    dbConnector = new DataBase(userName, password);
-    dbConnector.createEntities();
+  private void start(){
     updateService = new UpdateService(dbConnector, LOCKFORWAITANDNOTIFY);
     Thread updateThread = new Thread(updateService);
     updateThread.start();
-    boolean flag = true;
 
-    while (flag) {
-      System.out.println(
-          "Write \"Exit\" to close program.\n"
-              + "write \"add\" to add site.\n"
-              + "write \"view\" to go to view mode.\n"
-              + "write \"update\" to updating current data.\n");
-
-      String input = reader.next().toLowerCase();
-
-      switch (input) {
-        case "exit":
-          flag = false;
-          break;
-        case "add":
-          addSite();
-          break;
-        case "view":
-          viewMode();
-          break;
-        case "update":
-          update();
-          break;
-        default:
-          System.out.println("input is not valid.\nplease try again.\n");
-          break;
-      }
-    }
     updateService.threadPoolForUpdaters.shutdownNow();
     updateThread.interrupt();
   }
 
   /**
-   * with this method,the clients can adding new sites to application.
+   * TODO
+   * add to Terminal class
+   * not added line remain
    */
-  private void addSite()
-      throws SQLException {
-    System.out.println("Write URL of RSS page.\n");
-    String rssUrl = reader.next().toLowerCase();
-
-    System.out.println("choose a name for this URL.\n");
-    String siteName = reader.next().toLowerCase();
-
-    System.out.println("enter the site config (like \"class/body\").\n");
-    reader.nextLine();
-    String siteConfig = reader.nextLine().toLowerCase();
-
-    dbConnector.addSite(rssUrl, siteName, siteConfig);
-    updateService.addSiteForUpdate(rssUrl, siteName);
+  private void addSite(){
+//    updateService.addSiteForUpdate(rssUrl, siteName);
   }
 
   /**
-   * with this method, the clients can updating the database.
+   * TODO
+   * add to Controller class
+   * not added line remain
    */
   private void update() {
     synchronized (LOCKFORWAITANDNOTIFY) {
@@ -115,44 +57,12 @@ final class Client {
   }
 
   /**
-   * this method create for handling the state of client activity. you can see the state diagram for
-   * client activity for more info.
+   * TODO
+   * add to Terminal class
+   * not added line remain
    */
-  private void viewMode() throws SQLException {
+  private void viewMode(){
 
-    boolean flag = true;
-
-    while (flag) {
-      System.out.println(
-          "Write \"latest\" to see 10 latest news.\n"
-              + "write \"search\" to go to search mode.\n"
-              + "write \"history\" to see history of sites.\n"
-              + "write \"today\" to see number of news for today for each site.\n"
-              + "write \"back\" to back to start state.");
-
-      String input = reader.next().toLowerCase();
-
-      switch (input) {
-        case "latest":
-          latest();
-          break;
-        case "search":
-          searchMode();
-          break;
-        case "history":
-          history();
-          break;
-        case "today":
-          today();
-          break;
-        case "back":
-          flag = false;
-          break;
-        default:
-          System.out.println("input is not valid.\nplease try again.\n");
-          break;
-      }
-    }
   }
 
   /**

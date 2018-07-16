@@ -24,17 +24,20 @@ public class DatabaseManager {
     username = "armin";
     password = "nimroo";
     dataSource = new BasicDataSource();
-    setupDataSource();
+    setupDataSource(5, 10, 20);
     try {
       createDatabase();
     } catch (SQLException e) {
       System.out.println("can not connecting to database for create tables,"
-          + " please check your database-state and config-File and re-Run Application!");
+          + " please check your database-state and config-File and re-run Application!");
       e.printStackTrace();
       System.exit(0);
     }
   }
 
+  /**
+   * @author ArminF96
+   */
   public static DatabaseManager getInstance() {
     if (databaseManager == null) {
       databaseManager = new DatabaseManager();
@@ -75,21 +78,28 @@ public class DatabaseManager {
         + "?autoReconnect=true&useSSL=true&useUnicode=true&characterEncoding=utf-8";
   }
 
-  private void setupDataSource() {
+  /**
+   * @author ArminF96
+   */
+  private void setupDataSource(int minIdleConnection, int maxIdleConnection,
+      int maxOpenConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
     dataSource.setUsername(username);
     dataSource.setPassword(password);
     dataSource.setUrl(url);
-    dataSource.setMinIdle(5);
-    dataSource.setMaxIdle(10);
-    dataSource.setMaxOpenPreparedStatements(20);
+    dataSource.setMinIdle(minIdleConnection);
+    dataSource.setMaxIdle(maxIdleConnection);
+    dataSource.setMaxOpenPreparedStatements(maxOpenConnection);
   }
 
   public Connection getConnection() throws SQLException {
     return this.dataSource.getConnection();
   }
 
+  /**
+   * @author ArminF96
+   */
   private void createDatabase() throws SQLException {
 
     String siteEntity =
