@@ -2,9 +2,10 @@ package ir.sahab.nimbo2;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,10 +30,10 @@ class DataBase {
         "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT, siteName TINYTEXT CHARACTER SET utf8,"
             + "rssUrl TINYTEXT CHARACTER SET utf8, configSettings varchar(100));";
     createHistoryEntity =
-        "create table if not exists history(siteID int, date date, numberOfNews int, PRIMARY KEY (siteID,date));";
+        "create table if not exists history(siteID int, publishDate TIMESTAMP, numberOfNews int, PRIMARY KEY (siteID,publishDate));";
     createNewsEntity =
         "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, link TEXT CHARACTER SET utf8, siteID int,"
-            + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT, body MEDIUMTEXT CHARACTER SET utf8);";
+            + " title TEXT CHARACTER SET utf8, publishDate TIMESTAMP, body MEDIUMTEXT CHARACTER SET utf8);";
     this.userName = userName;
     this.password = password;
   }
@@ -127,7 +128,13 @@ class DataBase {
         insertData.setString(1, tmp.get("link"));
         insertData.setInt(2, siteID);
         insertData.setString(3, tmp.get("title"));
-        insertData.setString(4, tmp.get("pubDate"));
+
+        Date pubDate = getPubDate(tmp.get("pubDate"));
+        java.sql.Timestamp sqlDate = null;
+        if (pubDate != null) {
+          sqlDate = new java.sql.Timestamp(pubDate.getTime());
+        }
+        insertData.setTimestamp(4, sqlDate);
 
         Document doc = Jsoup.connect(tmp.get("link")).get();
         Elements rows = doc.getElementsByAttributeValue(divKey, divVal);
@@ -147,7 +154,7 @@ class DataBase {
           connection.prepareStatement(
               "select * from news where title like '%" + partOfTitle + "%';");
       ResultSet searchResult = searchTitles.executeQuery();
-      if(searchResult.getRow() == 0){
+      if (searchResult.getRow() == 0) {
         System.out.println("no title contains this!");
       }
       while (searchResult.next()) {
@@ -159,10 +166,10 @@ class DataBase {
   void searchInBody(String partOfBody) throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchBodies =
-              connection.prepareStatement(
-                      "select * from news where body like '%" + partOfBody + "%';");
+          connection.prepareStatement(
+              "select * from news where body like '%" + partOfBody + "%';");
       ResultSet searchResult = searchBodies.executeQuery();
-      if(searchResult.getRow()==0){
+      if (searchResult.getRow() == 0) {
         System.out.println("none of the news contain what u typed!");
       }
       while (searchResult.next()) {
@@ -174,15 +181,48 @@ class DataBase {
   void printSitesId() throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchBodies =
-              connection.prepareStatement(
-                      "select * from sites;");
+          connection.prepareStatement(
+              "select * from sites;");
       ResultSet searchResult = searchBodies.executeQuery();
-      if(searchResult.getRow()==0){
+      if (searchResult.getRow() == 0) {
         System.out.println("none of the news contain what u typed!");
       }
       while (searchResult.next()) {
-        System.out.println(searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
+        System.out
+            .println(searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
       }
     }
+  }
+
+  /**
+   * in this method, we convert date from string type to date type.
+   * @param dateString  string that contain date.
+   * @return  return date that contain pubDate.
+   */
+  private Date getPubDate(String dateString) {
+    System.out.println(dateString);
+    ArrayList<SimpleDateFormat> formats = new ArrayList<>();
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm"));
+    formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss"));
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss"));
+    formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"));
+    Date date = null;
+    Boolean flag = false;
+    for (SimpleDateFormat formatter : formats) {
+      try {
+        date = formatter.parse(dateString);
+        if (date != null) {
+          flag = true;
+          break;
+        }
+      } catch (ParseException e) {
+
+      }
+    }
+    System.out.println(date+ "\n\n");
+    if (!flag) {
+      return null;
+    }
+    return date;
   }
 }
