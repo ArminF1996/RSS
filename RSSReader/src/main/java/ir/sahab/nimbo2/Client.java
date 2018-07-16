@@ -147,8 +147,8 @@ final class Client {
   /**
    * with this method, the clients can see the 10 latest news from one news agency.
    */
-  private void latest() {
-    // TODO show sites with id
+  private void latest() throws SQLException {
+    dbConnector.printSitesId();
     System.out.println("write site id.");
     int id = reader.nextInt();
     // TODO show latest news
@@ -208,10 +208,10 @@ final class Client {
   /**
    * with this method, the clients can search the news by some string in the news body.
    */
-  private void searchByBody() {
+  private void searchByBody() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
-    // TODO show all news that contain this string
+    dbConnector.searchInBody(input);
   }
 
   /**
@@ -220,6 +220,6 @@ final class Client {
   private void searchByTitle() throws SQLException {
     System.out.println("write something.");
     String input = reader.next().toLowerCase();
-    dbConnector.searchByTitle(input);
+    dbConnector.searchInTitle(input);
   }
 }

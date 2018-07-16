@@ -141,14 +141,47 @@ class DataBase {
     }
   }
 
-  void searchByTitle(String partOfTitle) throws SQLException {
+  void searchInTitle(String partOfTitle) throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchTitles =
           connection.prepareStatement(
               "select * from news where title like '%" + partOfTitle + "%';");
       ResultSet searchResult = searchTitles.executeQuery();
+      if(searchResult.getRow() == 0){
+        System.out.println("no title contains this!");
+      }
       while (searchResult.next()) {
         System.out.println(searchResult.getString("link"));
+      }
+    }
+  }
+
+  void searchInBody(String partOfBody) throws SQLException {
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchBodies =
+              connection.prepareStatement(
+                      "select * from news where body like '%" + partOfBody + "%';");
+      ResultSet searchResult = searchBodies.executeQuery();
+      if(searchResult.getRow()==0){
+        System.out.println("none of the news contain what u typed!");
+      }
+      while (searchResult.next()) {
+        System.out.println(searchResult.getString("link"));
+      }
+    }
+  }
+
+  void printSitesId() throws SQLException {
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchBodies =
+              connection.prepareStatement(
+                      "select * from sites;");
+      ResultSet searchResult = searchBodies.executeQuery();
+      if(searchResult.getRow()==0){
+        System.out.println("none of the news contain what u typed!");
+      }
+      while (searchResult.next()) {
+        System.out.println(searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
       }
     }
   }
