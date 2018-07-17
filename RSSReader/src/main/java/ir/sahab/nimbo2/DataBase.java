@@ -193,7 +193,7 @@ class DataBase {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchLatestNews =
           connection.prepareStatement(
-              "select * from news where siteID = " + siteId + " order by publishDate;");
+              "select * from news where siteID = " + siteId + " order by publishDate desc;");
       ResultSet searchResult = searchLatestNews.executeQuery();
       int printedSitesCounter = 0;
       if (searchResult.getRow() == 0) {
@@ -202,6 +202,7 @@ class DataBase {
       while (searchResult.next() && printedSitesCounter < 10) {
         printedSitesCounter++;
         System.out.println(searchResult.getString("link"));
+        System.out.println(searchResult.getTimestamp("publishDate"));
       }
     }
   }
@@ -217,7 +218,7 @@ class DataBase {
             connection.prepareStatement(
                 "select * from news where siteID = "
                     + searchResultOfSites.getInt("siteID")
-                    + " order by publishDate;");
+                    + " order by publishDate desc;");
         ResultSet searchResultOfNews = searchNews.executeQuery();
         int todayNewsCounter = 0;
         while (searchResultOfNews.next()) {
@@ -226,8 +227,8 @@ class DataBase {
           cal1.setTime(today);
           cal2.setTime(new Date(searchResultOfNews.getTimestamp("publishDate").getTime()));
           boolean sameDay =
-                  cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-                          && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+              cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                  && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
           if (sameDay) {
             todayNewsCounter++;
           } else {
@@ -296,7 +297,7 @@ class DataBase {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchDates =
           connection.prepareStatement(
-              "select * from news where siteID = " + siteId + " order by publishDate;");
+              "select * from news where siteID = " + siteId + " order by publishDate desc;");
       ResultSet searchResult = searchDates.executeQuery();
       Date date = getDateWithoutTime(dateString);
       int newsCounter = 0;

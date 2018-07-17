@@ -16,12 +16,16 @@ public class UpdateService implements Runnable {
   private ConcurrentHashMap<String, String> listOfSitesAndRssUrl;
   private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
 
-  UpdateService(DataBase dbConnector, Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE ,int numberOfThreadsInPool,int waitTimeout) {
+  UpdateService(
+      DataBase dbConnector,
+      Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE,
+      int numberOfThreadsInPool,
+      int waitTimeout) {
     this.dbConnector = dbConnector;
     threadPoolForUpdaters = Executors.newFixedThreadPool(numberOfThreadsInPool);
     listOfSitesAndRssUrl = new ConcurrentHashMap<>();
     this.LOCK_FOR_WAIT_AND_NOTIFY_UPDATE = LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
-    this.waitTimeout=waitTimeout;
+    this.waitTimeout = waitTimeout;
   }
 
   void addSiteForUpdate(String rssUrl, String siteName) {
