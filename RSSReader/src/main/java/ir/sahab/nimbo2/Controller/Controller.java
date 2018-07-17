@@ -4,8 +4,7 @@ import ir.sahab.nimbo2.model.DatabaseManager;
 import ir.sahab.nimbo2.model.NewsRepository;
 import ir.sahab.nimbo2.model.Site;
 import ir.sahab.nimbo2.model.SiteRepository;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Controller {
 
@@ -31,20 +30,18 @@ public class Controller {
     return SiteRepository.getInstance().showAllSites(DatabaseManager.getInstance().getConnection());
   }
 
-  public ResultSet getTenLatestNews(int siteID) {
-    try {
-      return NewsRepository.getInstance()
-          .getTenNewestNewsOfSite(DatabaseManager.getInstance().getConnection(), siteID);
-    } catch (SQLException e) {
-      System.err.println("cna not connect to database right now, please try again later.");
-      return null;
-    }
+  public ResultSet getTenLatestNews(int siteID) throws SQLException {
+    return NewsRepository.getInstance()
+        .getTenNewestNewsOfSite(DatabaseManager.getInstance().getConnection(), siteID);
   }
 
   public ResultSet findNewsByBody(String str) throws SQLException {
-    return NewsRepository.getInstance().searchByBody(DatabaseManager.getInstance().getConnection(), str);
+    return NewsRepository.getInstance()
+        .searchByBody(DatabaseManager.getInstance().getConnection(), str);
   }
+
   public ResultSet findNewsByTitle(String str) throws SQLException {
-    return NewsRepository.getInstance().searchByBody(DatabaseManager.getInstance().getConnection(), str);
+    return NewsRepository.getInstance()
+        .searchByTitle(DatabaseManager.getInstance().getConnection(), str);
   }
 }

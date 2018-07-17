@@ -46,11 +46,11 @@ public class News {
   private String curlBody() {
     String body;
     try {
-      Document doc = Jsoup.connect(link).get();
+      Document doc = Jsoup.connect(link).timeout(5000).get();
       ArrayList<String> config = NewsRepository.getInstance().getConfig(siteID);
       Elements rows = doc.getElementsByAttributeValue(config.get(0), config.get(1));
       body = rows.first().text();
-    } catch (IOException e) {
+    } catch (IOException | NullPointerException | ExceptionInInitializerError | IndexOutOfBoundsException e) {
       body = "main body of news not found!";
     }
     return body;
@@ -67,6 +67,9 @@ public class News {
     formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss"));
     formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"));
     Date date = null;
+    if (pubDate == null) {
+      pubDate = (new Date()).toString();
+    }
     for (SimpleDateFormat formatter : formats) {
       try {
         date = formatter.parse(pubDate);

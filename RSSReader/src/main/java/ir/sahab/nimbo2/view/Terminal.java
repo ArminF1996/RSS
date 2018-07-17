@@ -2,8 +2,8 @@ package ir.sahab.nimbo2.view;
 
 import ir.sahab.nimbo2.Controller.Controller;
 import ir.sahab.nimbo2.model.DatabaseManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Terminal {
@@ -111,17 +111,22 @@ public class Terminal {
     }
     System.out.println("write site id.");
     int id = reader.nextInt();
-    ResultSet resultSet = Controller.getInstance().getTenLatestNews(id);
+    ResultSet resultSet = null;
     try {
-      if (resultSet.getRow() == 0) {
-        System.out.println("no news in the given Id!");
-        return;
-      }
-      while (resultSet.next()) {
-        System.out.println(resultSet.getString("link"));
+      resultSet = Controller.getInstance().getTenLatestNews(id);
+    } catch (SQLException e) {
+      System.err.println("some error happen from connecting to database, check the logfile!");
+      return;
+    }
+
+    try {
+      if (resultSet != null) {
+        while (resultSet.next()) {
+          System.out.println(resultSet.getString("link"));
+        }
       }
     } catch (SQLException e) {
-      System.err.println("failed on showing data in result set.");
+      System.err.println("latest news not found!");
     }
   }
 
@@ -172,18 +177,17 @@ public class Terminal {
       resultSet = Controller.getInstance().findNewsByBody(input);
     } catch (SQLException e) {
       System.err.println("some error happen from connecting to database, check the logfile!");
+      return;
     }
 
     try {
-      if (resultSet == null || resultSet.getRow() == 0) {
-        System.out.println("no body contains this!");
-        return;
-      }
-      while (resultSet.next()) {
-        System.out.println(resultSet.getString("link"));
+      if (resultSet != null) {
+        while (resultSet.next()) {
+          System.out.println(resultSet.getString("link"));
+        }
       }
     } catch (SQLException e) {
-      System.err.println("some error happen, check the logfile!");
+      System.err.println("not found any news with searchByBody!");
     }
   }
 
@@ -196,18 +200,17 @@ public class Terminal {
       resultSet = Controller.getInstance().findNewsByTitle(input);
     } catch (SQLException e) {
       System.err.println("some error happen from connecting to database, check the logfile!");
+      return;
     }
 
     try {
-      if (resultSet == null || resultSet.getRow() == 0) {
-        System.out.println("no title contains this!");
-        return;
-      }
-      while (resultSet.next()) {
-        System.out.println(resultSet.getString("link"));
+      if (resultSet != null) {
+        while (resultSet.next()) {
+          System.out.println(resultSet.getString("link"));
+        }
       }
     } catch (SQLException e) {
-      System.err.println("some error happen, check the logfile!");
+      System.err.println("not found any news with searchByTitle!");
     }
   }
 

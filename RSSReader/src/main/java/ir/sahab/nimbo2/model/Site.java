@@ -2,12 +2,10 @@ package ir.sahab.nimbo2.model;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.net.URLConnection;
+import java.util.*;
+import javax.print.DocFlavor;
+import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -69,8 +67,8 @@ public class Site {
     try {
       domTree = getRssXml();
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      System.err.println("filed on Parsing xml, " + Arrays.toString(e.getStackTrace()));
-      return null;
+      System.err.println("filed on Parsing xml, check your network connection.");
+      return rssDataMap;
     }
     for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
       rssDataMap.add(new HashMap<>());
@@ -93,7 +91,10 @@ public class Site {
       throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder domBuilder = domBuilderFactory.newDocumentBuilder();
-    return domBuilder.parse(new URL(rssUrl).openStream());
+    URL url = new URL(rssUrl);
+    URLConnection con = url.openConnection();
+    con.setConnectTimeout(5000);
+    return domBuilder.parse(con.getInputStream());
   }
 
   private boolean checkTag(Document domTree, int domNodeNumber, int itemNodeNumber, String tag) {

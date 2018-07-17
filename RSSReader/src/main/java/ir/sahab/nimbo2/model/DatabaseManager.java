@@ -1,11 +1,9 @@
 package ir.sahab.nimbo2.model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolingConnection;
 
 public class DatabaseManager {
 
@@ -34,7 +32,7 @@ public class DatabaseManager {
       System.out.println("can not connecting to database for create tables,"
           + " please check your database-state and config-File and re-run Application!");
     }
-    setupDataSource(5, 10, 20);
+    setupDataSource(10, 10, 20);
   }
 
   private void createDatabase() throws SQLException {
@@ -96,9 +94,13 @@ public class DatabaseManager {
       int maxOpenConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+    dataSource.setDefaultAutoCommit(true);
     dataSource.setUsername(username);
     dataSource.setPassword(password);
     dataSource.setUrl(url);
+    dataSource.setRemoveAbandonedTimeout(1);
+    dataSource.setSoftMinEvictableIdleTimeMillis(20);
+    dataSource.setRemoveAbandonedOnBorrow(true);
     dataSource.setMinIdle(minIdleConnection);
     dataSource.setMaxIdle(maxIdleConnection);
     dataSource.setMaxOpenPreparedStatements(maxOpenConnection);
@@ -130,6 +132,11 @@ public class DatabaseManager {
       PreparedStatement createNewsEntity = connection.prepareStatement(newsEntity);
       createNewsEntity.executeUpdate();
     }
+  }
+
+  public void getIdle() {
+    System.out.println("popop " + dataSource.getNumIdle());
+    System.out.println(dataSource.getNumActive() + " popop");
   }
 
 }

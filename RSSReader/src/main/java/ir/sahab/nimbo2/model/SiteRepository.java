@@ -1,9 +1,6 @@
 package ir.sahab.nimbo2.model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class SiteRepository {
@@ -22,33 +19,39 @@ public class SiteRepository {
 
   public void add(Site site) {
     mySites.add(site);
-    if (mySites.size() > 5) {
+    if (mySites.size() > 0) {
       try {
         addSitesToDatabase(DatabaseManager.getInstance().getConnection());
       } catch (SQLException e) {
-        System.err.println("can not get connection from database.");
+        System.err.println("currently we can not add sites to database!");
       }
     }
   }
 
   public void addSitesToDatabase(Connection connection) {
+    PreparedStatement addSite = null;
     for (Site site : mySites) {
-      System.out.println("ggg");
-      PreparedStatement addSite = null;
       try {
-        addSite = connection.prepareStatement("INSERT INTO sites(siteName,rssUrl,configSettings)"
-            + " values (?,?,?)");
-        addSite.setString(1, site.getSiteName());
-        addSite.setString(2, site.getRssUrl());
-        addSite.setString(3, site.getConfigSettings());
-        addSite.executeUpdate();
-        addNewsForSite(connection, site);
+        addToDatabase(connection, site);
+        findAndSetSiteIDFromDatabase(connection, site);
+        site.addNews();
       } catch (SQLException e) {
         System.err.println("failed on adding " + site.getSiteName() + " site to database.");
       }
     }
-    mySites = null;
+    mySites.clear();
   }
+
+  public void addToDatabase(Connection connection, Site site) throws SQLException {
+    PreparedStatement addSite = null;
+    addSite = connection.prepareStatement("INSERT INTO sites(siteName,rssUrl,configSettings)"
+        + " values (?,?,?)");
+    addSite.setString(1, site.getSiteName());
+    addSite.setString(2, site.getRssUrl());
+    addSite.setString(3, site.getConfigSettings());
+    addSite.executeUpdate();
+  }
+
 
   public void remove(Connection connection, int siteID) {
 
@@ -93,17 +96,17 @@ public class SiteRepository {
     return searchResult;
   }
 
-  public void addNewsForSite(Connection connection, Site site) {
+  public void findAndSetSiteIDFromDatabase(Connection connection, Site site) {
     PreparedStatement getSiteID = null;
-    ResultSet resultSet = null;
     try {
       getSiteID = connection.prepareStatement("select siteID from sites where siteName = ?;");
       getSiteID.setString(1, site.getSiteName());
-      resultSet = getSiteID.executeQuery();
-      site.setSiteID(resultSet.getInt("siteID"));
+      ResultSet resultSet = getSiteID.executeQuery();
+      if (resultSet.next()) {
+        site.setSiteID(resultSet.getInt("siteID"));
+      }
     } catch (SQLException e) {
       site.setSiteID(0);
     }
-    site.addNews();
   }
 }
