@@ -1,6 +1,7 @@
 package ir.sahab.nimbo2.view;
 
 import ir.sahab.nimbo2.Controller.Controller;
+import ir.sahab.nimbo2.model.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ public class Terminal {
 
   private Terminal() {
     reader = new Scanner(System.in);
+    DatabaseManager.getInstance();
     this.start();
   }
 
@@ -121,7 +123,6 @@ public class Terminal {
       }
     } catch (SQLException e) {
       System.err.println("failed on showing data in result set.");
-      return;
     }
   }
 

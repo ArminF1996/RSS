@@ -12,10 +12,10 @@ import org.xml.sax.SAXException;
 
 public class Site {
 
-  int siteID;
-  String siteName;
-  String rssUrl;
-  String configSettings;
+  private int siteID;
+  private String siteName;
+  private String rssUrl;
+  private String configSettings;
 
   public Site(String siteName, String rssUrl, String configSettings) {
     this.siteName = siteName;

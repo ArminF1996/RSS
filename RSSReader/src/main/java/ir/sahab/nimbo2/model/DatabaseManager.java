@@ -103,14 +103,15 @@ public class DatabaseManager {
   private void createDatabase() throws SQLException {
 
     String siteEntity =
-        "create table if not exists Sites(siteID int PRIMARY KEY AUTO_INCREMENT,"
+        "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT,"
             + " siteName TINYTEXT CHARACTER SET utf8, rssUrl TINYTEXT CHARACTER SET utf8,"
             + " configSettings varchar(150));";
     String newsEntity =
-        "create table if not exists News(newsID int PRIMARY KEY AUTO_INCREMENT, "
-            + "link TEXT CHARACTER SET utf8,siteID int FOREIGN KEY REFERENCES Sites(siteID),"
+        "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, "
+            + "link TEXT CHARACTER SET utf8,siteID int,"
             + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT,"
-            + " body MEDIUMTEXT CHARACTER SET utf8);";
+            + " body MEDIUMTEXT CHARACTER SET utf8,"
+            + "FOREIGN KEY (siteID) REFERENCES sites(siteID));";
     try (Connection connection = DriverManager
         .getConnection(this.url, this.username, this.password)) {
       PreparedStatement createSiteEntity = connection.prepareStatement(siteEntity);

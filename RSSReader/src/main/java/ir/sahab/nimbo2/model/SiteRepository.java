@@ -33,17 +33,17 @@ public class SiteRepository {
 
   public void addSitesToDatabase(Connection connection) {
     for (Site site : mySites) {
-
+      System.out.println("ggg");
       PreparedStatement addSite = null;
       try {
-        addSite = connection.prepareStatement("INSERT INTO Sites(siteName,rssUrl,configSettings)"
+        addSite = connection.prepareStatement("INSERT INTO sites(siteName,rssUrl,configSettings)"
             + " values (?,?,?)");
-        addSite.setString(1, site.siteName);
-        addSite.setString(2, site.rssUrl);
-        addSite.setString(3, site.configSettings);
+        addSite.setString(1, site.getSiteName());
+        addSite.setString(2, site.getRssUrl());
+        addSite.setString(3, site.getConfigSettings());
         addSite.executeUpdate();
       } catch (SQLException e) {
-        System.err.println("failed on adding " + site.siteName + " site to database.");
+        System.err.println("failed on adding " + site.getSiteName() + " site to database.");
       }
     }
     mySites = null;
@@ -53,7 +53,7 @@ public class SiteRepository {
 
     PreparedStatement removeSite = null;
     try {
-      removeSite = connection.prepareStatement("DELETE FROM Sites WHERE siteID = ? ");
+      removeSite = connection.prepareStatement("DELETE FROM sites WHERE siteID = ? ");
       removeSite.setInt(1, siteID);
       removeSite.executeUpdate();
     } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class SiteRepository {
     PreparedStatement updateConfigSetting = null;
     try {
       updateConfigSetting = connection
-          .prepareStatement("UPDATE Sites SET configSettings = ? WHERE siteID = ?");
+          .prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
       updateConfigSetting.setString(1, configSetting);
       updateConfigSetting.setInt(2, siteID);
       updateConfigSetting.executeUpdate();

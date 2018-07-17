@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NewsRepository {
 
@@ -39,14 +40,14 @@ public class NewsRepository {
       try {
         addNews = connection.prepareStatement(
             "INSERT INTO News(link, siteID, title, publishDate, body) values (?,?,?,?,?)");
-        addNews.setString(1, news.link);
-        addNews.setInt(2, news.siteID);
-        addNews.setString(3, news.title);
-        addNews.setTimestamp(4, news.publishDate);
-        addNews.setString(5, news.body);
+        addNews.setString(1, news.getLink());
+        addNews.setInt(2, news.getSiteID());
+        addNews.setString(3, news.getTitle());
+        addNews.setTimestamp(4, news.getPublishDate());
+        addNews.setString(5, news.getBody());
         addNews.executeUpdate();
       } catch (SQLException e) {
-        System.err.println("failed on adding " + news.title + " site to database.");
+        System.err.println("failed on adding " + news.getTitle() + " site to database.");
       }
     }
     myNews = null;
@@ -82,8 +83,25 @@ public class NewsRepository {
     PreparedStatement searchBodies = connection
         .prepareStatement("select * from News where siteID = ? order by publishDate LIMIT 10;");
     searchBodies.setInt(1, siteID);
-    ResultSet searchResult = searchBodies.executeQuery();
-    return searchResult;
+    return searchBodies.executeQuery();
+  }
+
+  public ArrayList<String> getConfig(int siteID) {
+    ArrayList<String> ret = new ArrayList<>();
+    try {
+      Connection connection = DatabaseManager.getInstance().getConnection();
+      PreparedStatement getConfig = connection.prepareStatement(
+          "select configSettings from sites where siteID = ?");
+      getConfig.setInt(1, siteID);
+      ResultSet resultSet = getConfig.executeQuery();
+      resultSet.next();
+      String config = resultSet.getString(1);
+      ret = new ArrayList<>(Arrays.asList(config.split("/")));
+    } catch (SQLException e) {
+      ret.add("class");
+      ret.add("body");
+    }
+    return ret;
   }
 
   public ResultSet getNumberOfNewsForToday(Connection connection) {
