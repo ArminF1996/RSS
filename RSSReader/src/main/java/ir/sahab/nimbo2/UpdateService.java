@@ -12,14 +12,16 @@ import java.util.concurrent.Executors;
 public class UpdateService implements Runnable {
   private DataBase dbConnector;
   ExecutorService threadPoolForUpdaters;
+  private int waitTimeout;
   private ConcurrentHashMap<String, String> listOfSitesAndRssUrl;
-  private final Object LOCK_FOR_WAIT_AND_NOTIFY;
+  private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
 
-  UpdateService(DataBase dbConnector, Object LOCK_FOR_WAIT_AND_NOTIFY) {
+  UpdateService(DataBase dbConnector, Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE ,int numberOfThreadsInPool,int waitTimeout) {
     this.dbConnector = dbConnector;
-    threadPoolForUpdaters = Executors.newFixedThreadPool(20);
+    threadPoolForUpdaters = Executors.newFixedThreadPool(numberOfThreadsInPool);
     listOfSitesAndRssUrl = new ConcurrentHashMap<>();
-    this.LOCK_FOR_WAIT_AND_NOTIFY = LOCK_FOR_WAIT_AND_NOTIFY;
+    this.LOCK_FOR_WAIT_AND_NOTIFY_UPDATE = LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
+    this.waitTimeout=waitTimeout;
   }
 
   void addSiteForUpdate(String rssUrl, String siteName) {
@@ -34,9 +36,9 @@ public class UpdateService implements Runnable {
         threadPoolForUpdaters.submit(
             new UpdateSite(siteNameAndRssUrl.getKey(), siteNameAndRssUrl.getValue()));
       }
-      synchronized (LOCK_FOR_WAIT_AND_NOTIFY) {
+      synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
         try {
-          LOCK_FOR_WAIT_AND_NOTIFY.wait(300000);
+          LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.wait(waitTimeout);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

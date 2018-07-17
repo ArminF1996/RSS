@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
+import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -145,7 +144,6 @@ class DataBase {
         }
         insertData.setString(5, body);
         insertData.executeUpdate();
-        System.out.println("here");
       }
     }
   }
@@ -223,7 +221,14 @@ class DataBase {
         ResultSet searchResultOfNews = searchNews.executeQuery();
         int todayNewsCounter = 0;
         while (searchResultOfNews.next()) {
-          if (today.equals(new Date(searchResultOfNews.getTimestamp("publishDate").getTime()))) {
+          Calendar cal1 = Calendar.getInstance();
+          Calendar cal2 = Calendar.getInstance();
+          cal1.setTime(today);
+          cal2.setTime(new Date(searchResultOfNews.getTimestamp("publishDate").getTime()));
+          boolean sameDay =
+                  cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                          && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+          if (sameDay) {
             todayNewsCounter++;
           } else {
             break;
@@ -265,22 +270,51 @@ class DataBase {
     return date;
   }
 
+  private Date getDateWithoutTime(String dateString) {
+    ArrayList<SimpleDateFormat> formats = new ArrayList<>();
+    formats.add(new SimpleDateFormat("dd MMM yyyy"));
+    formats.add(new SimpleDateFormat("yyyy-MM-dd"));
+    java.util.Date date = null;
+    Boolean flag = false;
+    for (SimpleDateFormat formatter : formats) {
+      try {
+        date = formatter.parse(dateString);
+        if (date != null) {
+          flag = true;
+        }
+      } catch (ParseException e) {
+
+      }
+    }
+    if (!flag) {
+      return null;
+    }
+    return date;
+  }
+
   void printSiteHistory(int siteId, String dateString) throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
       PreparedStatement searchDates =
           connection.prepareStatement(
               "select * from news where siteID = " + siteId + " order by publishDate;");
       ResultSet searchResult = searchDates.executeQuery();
-      Date date = (Date) getPubDate(dateString);
+      Date date = getDateWithoutTime(dateString);
       int newsCounter = 0;
       while (searchResult.next()) {
-        if (date.equals(new Date(searchResult.getTimestamp("publishDate").getTime()))) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date);
+        cal2.setTime(new Date(searchResult.getTimestamp("publishDate").getTime()));
+        boolean sameDay =
+            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        if (sameDay) {
           newsCounter++;
         } else if (newsCounter != 0) {
           break;
         }
-        System.out.println(newsCounter);
       }
+      System.out.println(newsCounter);
     }
   }
 }

@@ -1,6 +1,10 @@
 package ir.sahab.nimbo2;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Scanner;
 
 final class Client {
@@ -8,7 +12,7 @@ final class Client {
   private Scanner reader;
   private String clientName;
   private DataBase dbConnector;
-  private final Object LOCK_FOR_WAIT_AND_NOTIFY;
+  private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
   private UpdateService updateService;
 
   /**
@@ -16,11 +20,10 @@ final class Client {
    *
    * @param clientName each client must have a name.
    */
-  Client(String clientName)
-      throws SQLException {
+  Client(String clientName) throws SQLException {
     this.clientName = clientName;
     reader = new Scanner(System.in);
-    LOCK_FOR_WAIT_AND_NOTIFY = new Object();
+    LOCK_FOR_WAIT_AND_NOTIFY_UPDATE = new Object();
     this.start();
   }
 
@@ -38,16 +41,45 @@ final class Client {
    * client activity for more info.
    */
   private void start() throws SQLException {
-    System.out.println("please enter username of db.");
-    String userName = reader.next();
-    System.out.println("please enter password of db.");
-    String password = reader.next();
+    Properties configFile = new Properties();
+    InputStream fileInput = null;
+    String userName;
+    String password;
+    Thread updateThread = null;
+    try {
+      fileInput = new FileInputStream("config.properties");
+      configFile.load(fileInput);
+      userName = configFile.getProperty("DataBaseUserName");
+      password = configFile.getProperty("DataBasePassword");
+      dbConnector = new DataBase(userName, password);
+      dbConnector.createEntities();
+      updateService =
+          new UpdateService(
+              dbConnector,
+              LOCK_FOR_WAIT_AND_NOTIFY_UPDATE,
+              Integer.parseInt(configFile.getProperty("numberOfThreadsInPoolForUpdate")),
+              Integer.parseInt(configFile.getProperty("AutoUpdateWaitTimeInMillis")));
+      updateThread = new Thread(updateService);
+      updateThread.start();
+      for (int i = 1; i <= Integer.parseInt(configFile.getProperty("DefaultSiteNumber")); i++) {
+        String rssUrl = configFile.getProperty("Site" + i + "RssUrl").toLowerCase();
+        String siteName = configFile.getProperty("Site" + i + "Name").toLowerCase();
+        String siteConfig = configFile.getProperty("Site" + i + "TextConfig").toLowerCase();
+        dbConnector.addSite(rssUrl, siteName, siteConfig);
+        updateService.addSiteForUpdate(rssUrl, siteName);
+      }
 
-    dbConnector = new DataBase(userName, password);
-    dbConnector.createEntities();
-    updateService = new UpdateService(dbConnector, LOCK_FOR_WAIT_AND_NOTIFY);
-    Thread updateThread = new Thread(updateService);
-    updateThread.start();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if (fileInput != null) {
+        try {
+          fileInput.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
     boolean flag = true;
 
     while (flag) {
@@ -99,8 +131,8 @@ final class Client {
 
   /** with this method, the clients can updating the database. */
   private void update() {
-    synchronized (LOCK_FOR_WAIT_AND_NOTIFY) {
-      LOCK_FOR_WAIT_AND_NOTIFY.notify();
+    synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
+      LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
     }
   }
 
@@ -162,6 +194,7 @@ final class Client {
     System.out.println("write site id.");
     int id = reader.nextInt();
     System.out.println("write date.");
+    reader.nextLine();
     String date = reader.nextLine();
     dbConnector.printSiteHistory(id, date);
   }

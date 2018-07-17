@@ -4,8 +4,7 @@ import java.sql.SQLException;
 
 public class App {
 
-  public static void main(String[] args)
-      throws SQLException {
+  public static void main(String[] args) throws SQLException {
     Client client1 = new Client("console");
   }
 }
