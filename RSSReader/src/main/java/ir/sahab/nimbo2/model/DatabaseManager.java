@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 public class DatabaseManager {
 
   private String ip;
+  private String basicUrl;
   private String port;
   private String dbName;
   private String username;
@@ -20,19 +22,26 @@ public class DatabaseManager {
   private DatabaseManager() {
     ip = "localhost";
     port = "3306";
-    dbName = "nimroo";
+    dbName = "dbNimroo";
     username = "armin";
     password = "nimroo";
+    createUrl();
     dataSource = new BasicDataSource();
-    setupDataSource(5, 10, 20);
     try {
       createDatabase();
     } catch (SQLException e) {
+      e.printStackTrace();
       System.out.println("can not connecting to database for create tables,"
           + " please check your database-state and config-File and re-run Application!");
-      e.printStackTrace();
-      System.exit(0);
     }
+    setupDataSource(5, 10, 20);
+  }
+
+  private void createDatabase() throws SQLException {
+    Connection Conn = DriverManager.getConnection(basicUrl);
+    Statement s = Conn.createStatement();
+    s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
+    createDatabaseEntities();
   }
 
   /**
@@ -76,6 +85,8 @@ public class DatabaseManager {
   private void createUrl() {
     url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName
         + "?autoReconnect=true&useSSL=true&useUnicode=true&characterEncoding=utf-8";
+    basicUrl = "jdbc:mysql://" + ip + ":" + port
+        + "/?user=" + username + "&password=" + password + "&useSSL=true&autoReconnect=true";
   }
 
   /**
@@ -100,7 +111,7 @@ public class DatabaseManager {
   /**
    * @author ArminF96
    */
-  private void createDatabase() throws SQLException {
+  private void createDatabaseEntities() throws SQLException {
 
     String siteEntity =
         "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT,"

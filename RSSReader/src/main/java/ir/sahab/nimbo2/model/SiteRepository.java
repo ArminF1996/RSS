@@ -42,6 +42,7 @@ public class SiteRepository {
         addSite.setString(2, site.getRssUrl());
         addSite.setString(3, site.getConfigSettings());
         addSite.executeUpdate();
+        addNewsForSite(connection, site);
       } catch (SQLException e) {
         System.err.println("failed on adding " + site.getSiteName() + " site to database.");
       }
@@ -92,4 +93,17 @@ public class SiteRepository {
     return searchResult;
   }
 
+  public void addNewsForSite(Connection connection, Site site) {
+    PreparedStatement getSiteID = null;
+    ResultSet resultSet = null;
+    try {
+      getSiteID = connection.prepareStatement("select siteID from sites where siteName = ?;");
+      getSiteID.setString(1, site.getSiteName());
+      resultSet = getSiteID.executeQuery();
+      site.setSiteID(resultSet.getInt("siteID"));
+    } catch (SQLException e) {
+      site.setSiteID(0);
+    }
+    site.addNews();
+  }
 }

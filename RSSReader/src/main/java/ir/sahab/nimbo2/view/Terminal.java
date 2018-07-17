@@ -5,7 +5,6 @@ import ir.sahab.nimbo2.model.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-import javax.naming.directory.SearchResult;
 
 public class Terminal {
 
@@ -168,14 +167,48 @@ public class Terminal {
     System.out.println("write something.");
     reader.nextLine();
     String input = reader.nextLine().toLowerCase();
-    //TODO
+    ResultSet resultSet = null;
+    try {
+      resultSet = Controller.getInstance().findNewsByBody(input);
+    } catch (SQLException e) {
+      System.err.println("some error happen from connecting to database, check the logfile!");
+    }
+
+    try {
+      if (resultSet == null || resultSet.getRow() == 0) {
+        System.out.println("no body contains this!");
+        return;
+      }
+      while (resultSet.next()) {
+        System.out.println(resultSet.getString("link"));
+      }
+    } catch (SQLException e) {
+      System.err.println("some error happen, check the logfile!");
+    }
   }
 
   private void searchByTitle() {
     System.out.println("write something.");
     reader.nextLine();
     String input = reader.nextLine().toLowerCase();
-    //TODO
+    ResultSet resultSet = null;
+    try {
+      resultSet = Controller.getInstance().findNewsByTitle(input);
+    } catch (SQLException e) {
+      System.err.println("some error happen from connecting to database, check the logfile!");
+    }
+
+    try {
+      if (resultSet == null || resultSet.getRow() == 0) {
+        System.out.println("no title contains this!");
+        return;
+      }
+      while (resultSet.next()) {
+        System.out.println(resultSet.getString("link"));
+      }
+    } catch (SQLException e) {
+      System.err.println("some error happen, check the logfile!");
+    }
   }
 
   private boolean showSitesWithId() {

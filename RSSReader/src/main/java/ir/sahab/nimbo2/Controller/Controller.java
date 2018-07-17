@@ -27,10 +27,6 @@ public class Controller {
     return null;
   }
 
-  public void getSitesId() {
-
-  }
-
   public ResultSet getSitesWithId() throws SQLException {
     return SiteRepository.getInstance().showAllSites(DatabaseManager.getInstance().getConnection());
   }
@@ -43,5 +39,12 @@ public class Controller {
       System.err.println("cna not connect to database right now, please try again later.");
       return null;
     }
+  }
+
+  public ResultSet findNewsByBody(String str) throws SQLException {
+    return NewsRepository.getInstance().searchByBody(DatabaseManager.getInstance().getConnection(), str);
+  }
+  public ResultSet findNewsByTitle(String str) throws SQLException {
+    return NewsRepository.getInstance().searchByBody(DatabaseManager.getInstance().getConnection(), str);
   }
 }

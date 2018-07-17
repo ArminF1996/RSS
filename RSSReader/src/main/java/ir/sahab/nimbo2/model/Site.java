@@ -3,6 +3,7 @@ package ir.sahab.nimbo2.model;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +31,10 @@ public class Site {
 
   public int getSiteID() {
     return siteID;
+  }
+
+  public void setSiteID(int siteID) {
+    this.siteID = siteID;
   }
 
   public String getSiteName() {
@@ -63,14 +68,8 @@ public class Site {
     Document domTree = null;
     try {
       domTree = getRssXml();
-    } catch (ParserConfigurationException e) {
-      System.err.println("filed on Parsing xml, ParserConfigurationException.");
-      return null;
-    } catch (IOException e) {
-      System.err.println("filed on Parsing xml, IOException.");
-      return null;
-    } catch (SAXException e) {
-      System.err.println("filed on Parsing xml, SAXException.");
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      System.err.println("filed on Parsing xml, " + Arrays.toString(e.getStackTrace()));
       return null;
     }
     for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
@@ -114,6 +113,15 @@ public class Site {
         .getChildNodes()
         .item(itemNodeNumber)
         .getTextContent();
+  }
+
+  public void addNews() {
+    ArrayList<HashMap<String, String>> rssDataMapArray = getRssData();
+    for (HashMap news : rssDataMapArray) {
+      NewsRepository.getInstance().add(
+          new News(siteID, (String) news.get("title"), (String) news.get("pubDate"),
+              (String) news.get("link")));
+    }
   }
 
 }
