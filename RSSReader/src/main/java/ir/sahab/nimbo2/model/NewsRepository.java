@@ -63,21 +63,23 @@ public class NewsRepository {
 
   public ResultSet searchByTitle(Connection connection, String str) throws SQLException {
     PreparedStatement searchTitles = connection
-        .prepareStatement("select * from news where title like '% '?' %';");
-    searchTitles.setString(1, str);
+        .prepareStatement("select * from news where title like ?;");
+    searchTitles.setString(1, "%" + str + "%");
     return searchTitles.executeQuery();
   }
 
   public ResultSet searchByBody(Connection connection, String str) throws SQLException {
     PreparedStatement searchBodies = connection
-        .prepareStatement("select * from news where body like '% '?' %';");
-    searchBodies.setString(1, str);
-    return searchBodies.executeQuery();
+        .prepareStatement("select * from news where body like ?;");
+    searchBodies.setString(1, "%" + str + "%");
+    ResultSet resultSet = searchBodies.executeQuery();
+    return resultSet;
   }
 
   public ResultSet getTenNewestNewsOfSite(Connection connection, int siteID) throws SQLException {
     PreparedStatement searchBodies = connection
-        .prepareStatement("select * from news where siteID = ? order by publishDate DESC LIMIT 10;");
+        .prepareStatement(
+            "select * from news where siteID = ? order by publishDate DESC LIMIT 10;");
     searchBodies.setInt(1, siteID);
     ResultSet resultSet = searchBodies.executeQuery();
     return resultSet;
