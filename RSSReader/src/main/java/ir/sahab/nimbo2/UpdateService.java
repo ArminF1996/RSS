@@ -10,16 +10,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UpdateService implements Runnable {
-  DataBase dbConnector;
+  private DataBase dbConnector;
   ExecutorService threadPoolForUpdaters;
-  ConcurrentHashMap<String, String> listOfSitesAndRssUrl;
-  Object LOCKFORWAITANDNOTIFY;
+  private ConcurrentHashMap<String, String> listOfSitesAndRssUrl;
+  private final Object LOCK_FOR_WAIT_AND_NOTIFY;
 
-  UpdateService(DataBase dbConnector, Object LOCKFORWAITANDNOTIFY) {
+  UpdateService(DataBase dbConnector, Object LOCK_FOR_WAIT_AND_NOTIFY) {
     this.dbConnector = dbConnector;
     threadPoolForUpdaters = Executors.newFixedThreadPool(20);
     listOfSitesAndRssUrl = new ConcurrentHashMap<>();
-    this.LOCKFORWAITANDNOTIFY = LOCKFORWAITANDNOTIFY;
+    this.LOCK_FOR_WAIT_AND_NOTIFY = LOCK_FOR_WAIT_AND_NOTIFY;
   }
 
   void addSiteForUpdate(String rssUrl, String siteName) {
@@ -34,9 +34,9 @@ public class UpdateService implements Runnable {
         threadPoolForUpdaters.submit(
             new UpdateSite(siteNameAndRssUrl.getKey(), siteNameAndRssUrl.getValue()));
       }
-      synchronized (LOCKFORWAITANDNOTIFY) {
+      synchronized (LOCK_FOR_WAIT_AND_NOTIFY) {
         try {
-          LOCKFORWAITANDNOTIFY.wait(300000);
+          LOCK_FOR_WAIT_AND_NOTIFY.wait(300000);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class UpdateService implements Runnable {
     String rssUrl;
     String siteName;
 
-    public UpdateSite(String rssUrl, String siteName) {
+    UpdateSite(String rssUrl, String siteName) {
       this.rssUrl = rssUrl;
       this.siteName = siteName;
     }
@@ -57,13 +57,7 @@ public class UpdateService implements Runnable {
     public void run() {
       try {
         dbConnector.addNewsForSite(rssUrl, siteName);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (SAXException e) {
-        e.printStackTrace();
-      } catch (ParserConfigurationException e) {
+      } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
         e.printStackTrace();
       }
     }

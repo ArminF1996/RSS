@@ -1,18 +1,14 @@
 package ir.sahab.nimbo2;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Scanner;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 final class Client {
 
   private Scanner reader;
   private String clientName;
   private DataBase dbConnector;
-  private final Object LOCKFORWAITANDNOTIFY;
+  private final Object LOCK_FOR_WAIT_AND_NOTIFY;
   private UpdateService updateService;
 
   /**
@@ -20,11 +16,11 @@ final class Client {
    *
    * @param clientName each client must have a name.
    */
-  public Client(String clientName)
-      throws SQLException, ParserConfigurationException, SAXException, IOException {
+  Client(String clientName)
+      throws SQLException {
     this.clientName = clientName;
     reader = new Scanner(System.in);
-    LOCKFORWAITANDNOTIFY = new Object();
+    LOCK_FOR_WAIT_AND_NOTIFY = new Object();
     this.start();
   }
 
@@ -41,8 +37,7 @@ final class Client {
    * this method create for handling the state of client activity. you can see the state diagram for
    * client activity for more info.
    */
-  private void start()
-      throws SQLException, IOException, SAXException, ParserConfigurationException {
+  private void start() throws SQLException {
     System.out.println("please enter username of db.");
     String userName = reader.next();
     System.out.println("please enter password of db.");
@@ -50,7 +45,7 @@ final class Client {
 
     dbConnector = new DataBase(userName, password);
     dbConnector.createEntities();
-    updateService = new UpdateService(dbConnector, LOCKFORWAITANDNOTIFY);
+    updateService = new UpdateService(dbConnector, LOCK_FOR_WAIT_AND_NOTIFY);
     Thread updateThread = new Thread(updateService);
     updateThread.start();
     boolean flag = true;
@@ -87,8 +82,7 @@ final class Client {
   }
 
   /** with this method,the clients can adding new sites to application. */
-  private void addSite()
-      throws SQLException{
+  private void addSite() throws SQLException {
     System.out.println("Write URL of RSS page.\n");
     String rssUrl = reader.next().toLowerCase();
 
@@ -105,8 +99,8 @@ final class Client {
 
   /** with this method, the clients can updating the database. */
   private void update() {
-    synchronized (LOCKFORWAITANDNOTIFY) {
-      LOCKFORWAITANDNOTIFY.notify();
+    synchronized (LOCK_FOR_WAIT_AND_NOTIFY) {
+      LOCK_FOR_WAIT_AND_NOTIFY.notify();
     }
   }
 
@@ -167,14 +161,16 @@ final class Client {
     dbConnector.printSitesId();
     System.out.println("write site id.");
     int id = reader.nextInt();
-    // TODO show history of all day for site
+    System.out.println("write date.");
+    String date = reader.nextLine();
+    dbConnector.printSiteHistory(id, date);
   }
 
   /**
    * with this method, the clients can see the number of published news for today for each news
    * agency.
    */
-  private void today() {
+  private void today() throws SQLException {
     dbConnector.printTodayNewsNumberForEachSite();
   }
 

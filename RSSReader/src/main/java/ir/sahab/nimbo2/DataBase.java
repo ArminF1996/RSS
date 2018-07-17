@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,7 +82,7 @@ class DataBase {
    *
    * @param rssUrl url of news agency's rssPage.
    * @param siteName news agency site's name.
-   * @param config config of this site. TODO
+   * @param config config of this site.
    * @return return the result of adding new site.
    */
   public void addSite(String rssUrl, String siteName, String config) throws SQLException {
@@ -106,7 +105,7 @@ class DataBase {
    * @param siteName site's name witch choose by client.
    * @return return the action result.
    */
-  public void addNewsForSite(String rssUrl, String siteName)
+  void addNewsForSite(String rssUrl, String siteName)
       throws SQLException, IOException, SAXException, ParserConfigurationException {
     ArrayList<HashMap<String, String>> rssDataHMap = rssData.getRssData(rssUrl);
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
@@ -146,6 +145,7 @@ class DataBase {
         }
         insertData.setString(5, body);
         insertData.executeUpdate();
+        System.out.println("here");
       }
     }
   }
@@ -193,10 +193,10 @@ class DataBase {
 
   void printLatestNews(int siteId) throws SQLException {
     try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchBodies =
+      PreparedStatement searchLatestNews =
           connection.prepareStatement(
               "select * from news where siteID = " + siteId + " order by publishDate;");
-      ResultSet searchResult = searchBodies.executeQuery();
+      ResultSet searchResult = searchLatestNews.executeQuery();
       int printedSitesCounter = 0;
       if (searchResult.getRow() == 0) {
         System.out.println("no news in the given Id!");
@@ -208,15 +208,37 @@ class DataBase {
     }
   }
 
-  void printTodayNewsNumberForEachSite() {
-    Date today = Date.valueOf(LocalDate.now());
-    System.out.println(today);
+  void printTodayNewsNumberForEachSite() throws SQLException {
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    Date today = new Date(currentTime.getTime());
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchSites = connection.prepareStatement("select * from sites;");
+      ResultSet searchResultOfSites = searchSites.executeQuery();
+      while (searchResultOfSites.next()) {
+        PreparedStatement searchNews =
+            connection.prepareStatement(
+                "select * from news where siteID = "
+                    + searchResultOfSites.getInt("siteID")
+                    + " order by publishDate;");
+        ResultSet searchResultOfNews = searchNews.executeQuery();
+        int todayNewsCounter = 0;
+        while (searchResultOfNews.next()) {
+          if (today.equals(new Date(searchResultOfNews.getTimestamp("publishDate").getTime()))) {
+            todayNewsCounter++;
+          } else {
+            break;
+          }
+        }
+        System.out.println(searchResultOfSites.getString("siteName") + " : " + todayNewsCounter);
+      }
+    }
   }
 
   /**
    * in this method, we convert date from string type to date type.
-   * @param dateString  string that contain date.
-   * @return  return date that contain pubDate.
+   *
+   * @param dateString string that contain date.
+   * @return return date that contain pubDate.
    */
   private java.util.Date getPubDate(String dateString) {
     ArrayList<SimpleDateFormat> formats = new ArrayList<>();
@@ -241,5 +263,24 @@ class DataBase {
       return null;
     }
     return date;
+  }
+
+  void printSiteHistory(int siteId, String dateString) throws SQLException {
+    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
+      PreparedStatement searchDates =
+          connection.prepareStatement(
+              "select * from news where siteID = " + siteId + " order by publishDate;");
+      ResultSet searchResult = searchDates.executeQuery();
+      Date date = (Date) getPubDate(dateString);
+      int newsCounter = 0;
+      while (searchResult.next()) {
+        if (date.equals(new Date(searchResult.getTimestamp("publishDate").getTime()))) {
+          newsCounter++;
+        } else if (newsCounter != 0) {
+          break;
+        }
+        System.out.println(newsCounter);
+      }
+    }
   }
 }
