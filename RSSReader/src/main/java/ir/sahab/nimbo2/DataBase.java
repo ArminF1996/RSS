@@ -96,62 +96,44 @@ class DataBase {
     }
   }
 
+  /**
+   * TODO go to newsRepo
+   */
   void searchInTitle(String partOfTitle) throws SQLException {
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchTitles =
-          connection.prepareStatement(
-              "select * from news where title like '% " + partOfTitle + " %';");
-      ResultSet searchResult = searchTitles.executeQuery();
-      if (searchResult.getRow() == 0) {
-        System.out.println("no title contains this!");
-      }
-      while (searchResult.next()) {
-        System.out.println(searchResult.getString("link"));
-      }
+    ResultSet searchResult = null;
+    if (searchResult.getRow() == 0) {
+      System.out.println("no title contains this!");
+    }
+    while (searchResult.next()) {
+      System.out.println(searchResult.getString("link"));
     }
   }
 
+  /**
+   * TODO go to newsRepo
+   */
   void searchInBody(String partOfBody) throws SQLException {
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchBodies =
-          connection.prepareStatement(
-              "select * from news where body like '% " + partOfBody + " %';");
-      ResultSet searchResult = searchBodies.executeQuery();
-      if (searchResult.getRow() == 0) {
-        System.out.println("none of the news contain what you typed!");
-      }
-      while (searchResult.next()) {
-        System.out.println(searchResult.getString("link"));
-      }
+    ResultSet searchResult = null;
+    if (searchResult.getRow() == 0) {
+      System.out.println("none of the news contain what you typed!");
+    }
+    while (searchResult.next()) {
+      System.out.println(searchResult.getString("link"));
     }
   }
 
+  /**
+   * TODO add to SiteRepo class not added line remain
+   */
   void printSitesId() throws SQLException {
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchBodies = connection.prepareStatement("select * from sites;");
-      ResultSet searchResult = searchBodies.executeQuery();
-      while (searchResult.next()) {
-        System.out.println(
-            searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
-      }
-    }
+
   }
 
+  /**
+   * TODO add to SiteRepo class not added line remain
+   */
   void printLatestNews(int siteId) throws SQLException {
-    try (Connection connection = DriverManager.getConnection(dbUrl, userName, password)) {
-      PreparedStatement searchBodies =
-          connection.prepareStatement(
-              "select * from news where siteID = " + siteId + " order by publishDate;");
-      ResultSet searchResult = searchBodies.executeQuery();
-      int printedSitesCounter = 0;
-      if (searchResult.getRow() == 0) {
-        System.out.println("no news in the given Id!");
-      }
-      while (searchResult.next() && printedSitesCounter < 10) {
-        printedSitesCounter++;
-        System.out.println(searchResult.getString("link"));
-      }
-    }
+
   }
 
   void printTodayNewsNumberForEachSite() {
@@ -166,27 +148,6 @@ class DataBase {
    * @return return date that contain pubDate.
    */
   private java.util.Date getPubDate(String dateString) {
-    ArrayList<SimpleDateFormat> formats = new ArrayList<>();
-    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm"));
-    formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss"));
-    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss"));
-    formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"));
-    java.util.Date date = null;
-    Boolean flag = false;
-    for (SimpleDateFormat formatter : formats) {
-      try {
-        date = formatter.parse(dateString);
-        if (date != null) {
-          flag = true;
-          break;
-        }
-      } catch (ParseException e) {
-
-      }
-    }
-    if (!flag) {
-      return null;
-    }
-    return date;
+    return null;
   }
 }

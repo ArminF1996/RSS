@@ -13,45 +13,30 @@ import java.util.HashMap;
 
 class RssData {
 
-  ArrayList<HashMap<String, String>> getRssData(String link)
-      throws ParserConfigurationException, IOException, SAXException {
-    ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
-    DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder domBuilder = domBuilderFactory.newDocumentBuilder();
-    Document domTree = domBuilder.parse(new URL(link).openStream());
-    for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
-      rssDataMap.add(new HashMap<>());
-      for (int j = 0;
-          j < domTree.getElementsByTagName("item").item(i).getChildNodes().getLength();
-          j++) {
-        if (checkTag(domTree, i, j, "title")) {
-          rssDataMap.get(i).put("title", contentOfNode(domTree, i, j));
-        } else if (checkTag(domTree, i, j, "link")) {
-          rssDataMap.get(i).put("link", contentOfNode(domTree, i, j));
-        } else if (checkTag(domTree, i, j, "pubDate")) {
-          rssDataMap.get(i).put("pubDate", contentOfNode(domTree, i, j));
-        }
-      }
-    }
-    return rssDataMap;
+  /**
+   * TODO
+   * add to Site class
+   * not added line remain
+   */
+  ArrayList<HashMap<String, String>> getRssData(String link){
+    return null;
   }
 
+  /**
+   * TODO
+   * add to Site class
+   * not added line remain
+   */
   private boolean checkTag(Document domTree, int domNodeNumber, int itemNodeNumber, String tag) {
-    return domTree
-        .getElementsByTagName("item")
-        .item(domNodeNumber)
-        .getChildNodes()
-        .item(itemNodeNumber)
-        .toString()
-        .contains(tag);
+    return false;
   }
 
+  /**
+   * TODO
+   * add to Site class
+   * not added line remain
+   */
   private String contentOfNode(Document domTree, int domNodeNumber, int itemNodeNumber) {
-    return domTree
-        .getElementsByTagName("item")
-        .item(domNodeNumber)
-        .getChildNodes()
-        .item(itemNodeNumber)
-        .getTextContent();
+    return null;
   }
 }

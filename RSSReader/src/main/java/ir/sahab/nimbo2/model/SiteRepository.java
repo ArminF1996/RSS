@@ -10,12 +10,25 @@ public class SiteRepository {
 
   private ArrayList<Site> mySites;
 
-  public SiteRepository() {
+  private static SiteRepository ourInstance = new SiteRepository();
+
+  public static SiteRepository getInstance() {
+    return ourInstance;
+  }
+
+  private SiteRepository() {
     mySites = new ArrayList<>();
   }
 
-  void add(Site site) {
+  public void add(Site site) {
     mySites.add(site);
+    if (mySites.size() > 5) {
+      try {
+        addSitesToDatabase(DatabaseManager.getInstance().getConnection());
+      } catch (SQLException e) {
+        System.err.println("can not get connection from database.");
+      }
+    }
   }
 
   public void addSitesToDatabase(Connection connection) {
@@ -36,7 +49,7 @@ public class SiteRepository {
     mySites = null;
   }
 
-  void remove(Connection connection, int siteID) {
+  public void remove(Connection connection, int siteID) {
 
     PreparedStatement removeSite = null;
     try {
@@ -48,11 +61,11 @@ public class SiteRepository {
     }
   }
 
-  void updateNewsOfSite(Connection connection) {
+  public void updateNewsOfSite(Connection connection) {
     //TODO
   }
 
-  void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
+  public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
     PreparedStatement updateConfigSetting = null;
     try {
       updateConfigSetting = connection
@@ -65,19 +78,18 @@ public class SiteRepository {
     }
   }
 
-  ResultSet getNumberOfNewsForToday(Connection connection) {
-    //TODO
-    return null;
-  }
+  public ResultSet showAllSites(Connection connection) {
 
-  ResultSet getTenNewestNewsOfSite(Connection connection) {
-    //TODO
-    return null;
-  }
-
-  ResultSet getNumberOfNewsHistoryForPreviousDays(Connection connection) {
-    //TODO
-    return null;
+    PreparedStatement searchBodies = null;
+    ResultSet searchResult = null;
+    try {
+      searchBodies = connection.prepareStatement("select * from sites;");
+      searchResult = searchBodies.executeQuery();
+    } catch (SQLException e) {
+      System.err.println("can not show the list of sites right now, please try again later.");
+      return null;
+    }
+    return searchResult;
   }
 
 }
