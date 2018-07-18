@@ -16,6 +16,7 @@ public class DatabaseManager {
   private String url;
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
+  private int maxTotalConnection = 30;
 
   private DatabaseManager() {
     ip = "localhost";
@@ -31,13 +32,14 @@ public class DatabaseManager {
           "can not connecting to database for create tables,"
               + " please check your database-state and config-File and re-run Application!");
     }
-    setupDataSource(10, 10, 20);
+    setupDataSource(10, 10, 20, maxTotalConnection);
   }
 
   private void createDatabase() throws SQLException {
     Connection Conn = DriverManager.getConnection(basicUrl);
     Statement s = Conn.createStatement();
     s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
+    s.executeUpdate("set global max_connections = " + maxTotalConnection * 2);
     createDatabaseEntities();
   }
 
@@ -98,9 +100,11 @@ public class DatabaseManager {
             + "&useSSL=true&autoReconnect=true";
   }
 
-  /** @author ArminF96 */
-  private void setupDataSource(
-      int minIdleConnection, int maxIdleConnection, int maxOpenConnection) {
+  /**
+   * @author ArminF96
+   */
+  private void setupDataSource(int minIdleConnection, int maxIdleConnection,
+      int maxOpenConnection, int totalConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
     dataSource.setDefaultAutoCommit(true);
@@ -109,6 +113,7 @@ public class DatabaseManager {
     dataSource.setUrl(url);
     dataSource.setRemoveAbandonedTimeout(1);
     dataSource.setSoftMinEvictableIdleTimeMillis(20);
+    dataSource.setMaxTotal(totalConnection);
     dataSource.setRemoveAbandonedOnBorrow(true);
     dataSource.setMinIdle(minIdleConnection);
     dataSource.setMaxIdle(maxIdleConnection);
@@ -141,8 +146,4 @@ public class DatabaseManager {
     }
   }
 
-  public void getIdle() {
-    System.out.println("popop " + dataSource.getNumIdle());
-    System.out.println(dataSource.getNumActive() + " popop");
-  }
 }
