@@ -115,7 +115,9 @@ public class DatabaseManager {
         + "/?user=" + username + "&password=" + password + "&useSSL=true&autoReconnect=true";
   }
 
-  /** @author ArminF96 */
+  /**
+   * @author ArminF96
+   */
   private void setupDataSource(
       int minIdleConnection,
       int maxIdleConnection,
@@ -148,12 +150,12 @@ public class DatabaseManager {
     String siteEntity =
         "create table if not exists sites(siteID int PRIMARY KEY AUTO_INCREMENT,"
             + " siteName TINYTEXT CHARACTER SET utf8, rssUrl TINYTEXT CHARACTER SET utf8,"
-            + " configSettings varchar(150));";
+            + " configSettings varchar(150), urlHash varchar(40));";
     String newsEntity =
         "create table if not exists news(newsID int PRIMARY KEY AUTO_INCREMENT, "
             + "link TEXT CHARACTER SET utf8,siteID int,"
             + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT,"
-            + " body MEDIUMTEXT CHARACTER SET utf8,"
+            + " body MEDIUMTEXT CHARACTER SET utf8, linkHash varchar(40),"
             + "FOREIGN KEY (siteID) REFERENCES sites(siteID));";
     try (Connection connection = DriverManager
         .getConnection(this.url, this.username, this.password)) {

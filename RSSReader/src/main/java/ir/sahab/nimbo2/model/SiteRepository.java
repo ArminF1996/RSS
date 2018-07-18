@@ -4,11 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class SiteRepository {
-
-  private ArrayList<Site> mySites;
 
   private static SiteRepository ourInstance = new SiteRepository();
 
@@ -17,46 +15,32 @@ public class SiteRepository {
   }
 
   private SiteRepository() {
-    mySites = new ArrayList<>();
+
   }
 
-  public void add(Site site) {
-    mySites.add(site);
-    if (mySites.size() > 0) {
-      try {
-        addSitesToDatabase(DatabaseManager.getInstance().getConnection());
-      } catch (SQLException e) {
-        System.err.println("currently we can not add sites to database!");
+  public void addSitesToDatabase(Connection connection, Site site) {
+    try {
+      addToDatabase(connection, site);
+      findAndSetSiteIDFromDatabase(connection, site);
+      final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
+          DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
+      synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
+        LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
       }
+    } catch (SQLException e) {
+      System.err.println("failed on adding " + site.getSiteName() + " site to database.");
     }
   }
 
-  public void addSitesToDatabase(Connection connection) {
-    PreparedStatement addSite = null;
-    for (Site site : mySites) {
-      try {
-        addToDatabase(connection, site);
-        findAndSetSiteIDFromDatabase(connection, site);
-        final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
-            DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
-        synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
-          LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
-        }
-      } catch (SQLException e) {
-        System.err.println("failed on adding " + site.getSiteName() + " site to database.");
-      }
-    }
-    mySites.clear();
-  }
-
-  public void addToDatabase(Connection connection, Site site) throws SQLException {
+  private void addToDatabase(Connection connection, Site site) throws SQLException {
     PreparedStatement addSite = null;
     addSite =
         connection.prepareStatement(
-            "INSERT INTO sites(siteName,rssUrl,configSettings)" + " values (?,?,?)");
+            "INSERT INTO sites(siteName, rssUrl, configSettings, urlHash)" + " values (?,?,?,?)");
     addSite.setString(1, site.getSiteName());
     addSite.setString(2, site.getRssUrl());
     addSite.setString(3, site.getConfigSettings());
+    addSite.setString(4, getHash(site.getRssUrl()));
     addSite.executeUpdate();
   }
 
@@ -70,10 +54,6 @@ public class SiteRepository {
     } catch (SQLException e) {
       System.err.println("failed on deleting this site from database.");
     }
-  }
-
-  public void updateNewsOfSite(Connection connection) {
-    // TODO
   }
 
   public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
@@ -115,5 +95,9 @@ public class SiteRepository {
     } catch (SQLException e) {
       site.setSiteID(0);
     }
+  }
+
+  private String getHash(String str) {
+    return DigestUtils.md5Hex(str);
   }
 }

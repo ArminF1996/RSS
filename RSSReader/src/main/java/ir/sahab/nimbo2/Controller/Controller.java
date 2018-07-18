@@ -17,8 +17,8 @@ public class Controller {
   private Controller() {
   }
 
-  public void addSite(String rssUrl, String siteName, String siteConfig) {
-    SiteRepository.getInstance().add(new Site(siteName, rssUrl, siteConfig));
+  public void addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
+    SiteRepository.getInstance().addSitesToDatabase(DatabaseManager.getInstance().getConnection(), new Site(siteName, rssUrl, siteConfig));
   }
 
   public void update() {

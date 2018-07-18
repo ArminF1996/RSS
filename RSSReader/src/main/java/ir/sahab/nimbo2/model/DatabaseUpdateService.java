@@ -13,11 +13,11 @@ public class DatabaseUpdateService implements Runnable {
   private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
   private int numberOfThreadsInPool;
 
-    public int getNumberOfThreadsInPool() {
-        return numberOfThreadsInPool;
-    }
+  public int getNumberOfThreadsInPool() {
+    return numberOfThreadsInPool;
+  }
 
-    public static DatabaseUpdateService getInstance() {
+  public static DatabaseUpdateService getInstance() {
     return ourInstance;
   }
 
@@ -77,6 +77,7 @@ public class DatabaseUpdateService implements Runnable {
   }
 
   private class UpdateSite implements Runnable {
+
     int sitePlaceInArray;
 
     UpdateSite(int sitePlaceInArray) {

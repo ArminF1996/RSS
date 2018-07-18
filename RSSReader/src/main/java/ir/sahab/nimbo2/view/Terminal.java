@@ -45,8 +45,9 @@ public class Terminal {
         String siteConfig = configFile.getProperty("Site" + i + "TextConfig").toLowerCase();
         Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
       }
-    } catch (IOException ex) {
-      ex.printStackTrace();
+    } catch (IOException | SQLException ex) {
+      System.err
+          .println("currently we can not add sites to database, please check the configFile.");
     } finally {
       if (fileInput != null) {
         try {
@@ -89,6 +90,7 @@ public class Terminal {
     }
     DatabaseUpdateService.getInstance().getThreadPoolForUpdaters().shutdownNow();
     updateThread.interrupt();
+    System.exit(0);
   }
 
   private void addSite() {
@@ -102,7 +104,12 @@ public class Terminal {
     reader.nextLine();
     String siteConfig = reader.nextLine().toLowerCase();
 
-    Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
+    try {
+      Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
+    } catch (SQLException e) {
+      System.err
+          .println("currently we can not add sites to database, please check the configFile.");
+    }
   }
 
   private void viewMode() {
@@ -189,8 +196,9 @@ public class Terminal {
     } catch (SQLException | NullPointerException e) {
       sitesInformation = new ArrayList<>();
     }
-    for(HashMap siteInfo : sitesInformation){
-      System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo.get("numOfNews"));
+    for (HashMap siteInfo : sitesInformation) {
+      System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo
+          .get("numOfNews"));
     }
   }
 
@@ -292,6 +300,5 @@ public class Terminal {
   }
 
   public static void main(String[] args) {
-    Terminal terminal = Terminal.getInstance();
   }
 }
