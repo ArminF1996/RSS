@@ -19,11 +19,12 @@ public class Site {
     this.siteName = siteName;
     this.rssUrl = rssUrl;
     this.configSettings = configSettings;
-    DatabaseUpdateService.getInstance().addSiteForUpdate(this);
   }
 
   public Site(int siteID, String siteName, String rssUrl, String configSettings) {
-    this(siteName, rssUrl, configSettings);
+    this.siteName = siteName;
+    this.rssUrl = rssUrl;
+    this.configSettings = configSettings;
     this.siteID = siteID;
   }
 

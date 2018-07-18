@@ -1,5 +1,7 @@
 package ir.sahab.nimbo2.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +52,18 @@ public class DatabaseUpdateService implements Runnable {
   private DatabaseUpdateService() {
     sitesInDatabase = new ArrayList<>();
     LOCK_FOR_WAIT_AND_NOTIFY_UPDATE = new Object();
+  }
+
+  public void addSitesFromDatabaseToUpdateService(ResultSet sites) throws SQLException {
+    while (sites.next()) {
+      Site newSite =
+          new Site(
+              sites.getInt("siteID"),
+              sites.getString("siteName"),
+              sites.getString("rssUrl"),
+              sites.getString("configSettings"));
+      this.addSiteForUpdate(newSite);
+    }
   }
 
   void addSiteForUpdate(Site newSite) {

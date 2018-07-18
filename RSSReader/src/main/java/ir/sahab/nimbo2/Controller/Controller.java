@@ -14,7 +14,10 @@ public class Controller {
     return ourInstance;
   }
 
-  private Controller() {
+  private Controller() {}
+
+  public void addExistingSitesToUpdateService() throws SQLException {
+    DatabaseUpdateService.getInstance().addSitesFromDatabaseToUpdateService(this.getSitesWithId());
   }
 
   public void addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
@@ -50,15 +53,14 @@ public class Controller {
 
   public int getHistory(int siteID, String dateString) throws SQLException {
     return NewsRepository.getInstance()
-        .getNumberOfNewsHistoryForDate(DatabaseManager.getInstance().getConnection(), siteID,
-            dateString);
+        .getNumberOfNewsHistoryForDate(
+            DatabaseManager.getInstance().getConnection(), siteID, dateString);
   }
 
   public ArrayList<HashMap> getTodayInformation() throws SQLException {
     return NewsRepository.getInstance()
-        .getNumberOfNewsForToday(DatabaseManager.getInstance().getConnection(),
+        .getNumberOfNewsForToday(
+            DatabaseManager.getInstance().getConnection(),
             new Date(new Timestamp(System.currentTimeMillis()).getTime()));
-
   }
-
 }
