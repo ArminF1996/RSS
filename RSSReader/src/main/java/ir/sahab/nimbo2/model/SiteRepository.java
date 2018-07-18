@@ -37,6 +37,7 @@ public class SiteRepository {
       try {
         addToDatabase(connection, site);
         findAndSetSiteIDFromDatabase(connection, site);
+        DatabaseUpdateService.getInstance().addSiteForUpdate(site);
         final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
             DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
         synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {

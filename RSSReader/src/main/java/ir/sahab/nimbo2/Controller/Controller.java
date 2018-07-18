@@ -17,6 +17,10 @@ public class Controller {
   private Controller() {
   }
 
+  public void addExistingSitesToUpdateService() throws SQLException {
+      DatabaseUpdateService.getInstance().addSitesFromDatabaseToUpdateService(this.getSitesWithId());
+  }
+
   public void addSite(String rssUrl, String siteName, String siteConfig) {
     SiteRepository.getInstance().add(new Site(siteName, rssUrl, siteConfig));
   }
