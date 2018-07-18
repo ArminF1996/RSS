@@ -34,7 +34,10 @@ public class SiteRepository {
       try {
         addToDatabase(connection, site);
         findAndSetSiteIDFromDatabase(connection, site);
-        site.addNews();
+        final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE=DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
+        synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
+          LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
+        }
       } catch (SQLException e) {
         System.err.println("failed on adding " + site.getSiteName() + " site to database.");
       }

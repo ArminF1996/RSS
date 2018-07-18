@@ -20,9 +20,9 @@ public class DatabaseManager {
   private DatabaseManager() {
     ip = "localhost";
     port = "3306";
-    dbName = "dbNimroo";
-    username = "armin";
-    password = "nimroo";
+    dbName = "Nimroo";
+    username = "omid";
+    password = "7765aahh";
     createUrl();
     dataSource = new BasicDataSource();
     try {

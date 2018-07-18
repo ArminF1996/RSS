@@ -5,48 +5,34 @@ import java.util.*;
 
 public class NewsRepository {
 
-  private ArrayList<News> myNews;
-
   private static NewsRepository ourInstance = new NewsRepository();
 
   public static NewsRepository getInstance() {
     return ourInstance;
   }
 
-  private NewsRepository() {
-    myNews = new ArrayList<News>();
-  }
-
-  public void add(News news) {
-    myNews.add(news);
-    if (myNews.size() >= 10) {
+  public void addNewsToDatabase(News news) {
+      Connection connection = null;
       try {
-        addNewsToDataBase(DatabaseManager.getInstance().getConnection());
+          connection = DatabaseManager.getInstance().getConnection();
       } catch (SQLException e) {
         System.err.println("can not get connection from database.");
       }
-    }
-  }
-
-  public void addNewsToDataBase(Connection connection) {
-    for (News news : myNews) {
       PreparedStatement addNews;
 
       try {
-        addNews = connection.prepareStatement(
-            "INSERT INTO news(link, siteID, title, publishDate, body) values (?,?,?,?,?)");
-        addNews.setString(1, news.getLink());
-        addNews.setInt(2, news.getSiteID());
-        addNews.setString(3, news.getTitle());
-        addNews.setTimestamp(4, news.getPublishDate());
-        addNews.setString(5, news.getBody());
-        addNews.executeUpdate();
+          addNews = connection.prepareStatement(
+                  "INSERT INTO news(link, siteID, title, publishDate, body) values (?,?,?,?,?)");
+          addNews.setString(1, news.getLink());
+          addNews.setInt(2, news.getSiteID());
+          addNews.setString(3, news.getTitle());
+          addNews.setTimestamp(4, news.getPublishDate());
+          addNews.setString(5, news.getBody());
+          addNews.executeUpdate();
       } catch (SQLException e) {
-        e.printStackTrace();
-        System.err.println("failed on adding " + news.getTitle() + " news to database.");
+          e.printStackTrace();
+          System.err.println("failed on adding " + news.getTitle() + " news to database.");
       }
-    }
-    myNews.clear();
   }
 
   public void remove(Connection connection, int newsID) {
