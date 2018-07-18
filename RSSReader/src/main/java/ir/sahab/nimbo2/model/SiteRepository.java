@@ -18,9 +18,10 @@ public class SiteRepository {
 
   }
 
-  public void addSitesToDatabase(Connection connection, Site site) {
+  public String addSitesToDatabase(Connection connection, Site site) {
+    String result;
     try {
-      addToDatabase(connection, site);
+      result = addToDatabase(connection, site);
       findAndSetSiteIDFromDatabase(connection, site);
       final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
           DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
@@ -28,12 +29,17 @@ public class SiteRepository {
         LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
       }
     } catch (SQLException e) {
-      System.err.println("failed on adding " + site.getSiteName() + " site to database.");
+      result = "failed on adding " + site.getSiteName() + " site to database.";
     }
+    DatabaseUpdateService.getInstance().addSiteForUpdate(site);
+    return result;
   }
 
-  private void addToDatabase(Connection connection, Site site) throws SQLException {
-    PreparedStatement addSite = null;
+  private String addToDatabase(Connection connection, Site site) throws SQLException {
+    PreparedStatement addSite;
+    if (duplicateSite(connection, site)) {
+      return "this url is duplicate!";
+    }
     addSite =
         connection.prepareStatement(
             "INSERT INTO sites(siteName, rssUrl, configSettings, urlHash)" + " values (?,?,?,?)");
@@ -42,6 +48,7 @@ public class SiteRepository {
     addSite.setString(3, site.getConfigSettings());
     addSite.setString(4, getHash(site.getRssUrl()));
     addSite.executeUpdate();
+    return "site added successfully.";
   }
 
   public void remove(Connection connection, int siteID) {
@@ -99,5 +106,17 @@ public class SiteRepository {
 
   private String getHash(String str) {
     return DigestUtils.md5Hex(str);
+  }
+
+  private boolean duplicateSite(Connection connection, Site site) {
+    try {
+      PreparedStatement findDuplicate = connection
+          .prepareStatement("select siteID from sites where urlHash = ?;");
+      findDuplicate.setString(1, getHash(site.getRssUrl()));
+      ResultSet resultSet = findDuplicate.executeQuery();
+      return resultSet.next();
+    } catch (SQLException e) {
+      return false;
+    }
   }
 }

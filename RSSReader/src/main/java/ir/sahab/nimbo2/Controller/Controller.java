@@ -20,8 +20,8 @@ public class Controller {
     DatabaseUpdateService.getInstance().addSitesFromDatabaseToUpdateService(this.getSitesWithId());
   }
 
-  public void addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
-    SiteRepository.getInstance().addSitesToDatabase(DatabaseManager.getInstance().getConnection(), new Site(siteName, rssUrl, siteConfig));
+  public String addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
+    return SiteRepository.getInstance().addSitesToDatabase(DatabaseManager.getInstance().getConnection(), new Site(siteName, rssUrl, siteConfig));
   }
 
   public void update() {

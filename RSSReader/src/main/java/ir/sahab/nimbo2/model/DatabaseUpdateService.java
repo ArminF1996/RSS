@@ -55,6 +55,7 @@ public class DatabaseUpdateService implements Runnable {
   }
 
   public void addSitesFromDatabaseToUpdateService(ResultSet sites) throws SQLException {
+    sitesInDatabase.clear();
     while (sites.next()) {
       Site newSite =
           new Site(

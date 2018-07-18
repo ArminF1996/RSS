@@ -105,7 +105,7 @@ public class Terminal {
     String siteConfig = reader.nextLine().toLowerCase();
 
     try {
-      Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
+      System.err.println(Controller.getInstance().addSite(rssUrl, siteName, siteConfig));
     } catch (SQLException e) {
       System.err
           .println("currently we can not add sites to database, please check the configFile.");

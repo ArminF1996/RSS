@@ -22,14 +22,17 @@ public class NewsRepository {
   }
 
   public void addNewsToDatabase(News news) {
-    Connection connection = null;
+    Connection connection;
     try {
       connection = DatabaseManager.getInstance().getConnection();
     } catch (SQLException e) {
       System.err.println("can not get connection from database.");
+      return;
+    }
+    if (duplicateNews(connection, news)) {
+      return;
     }
     PreparedStatement addNews;
-
     try {
       addNews =
           connection.prepareStatement(
@@ -183,5 +186,17 @@ public class NewsRepository {
 
   private String getHash(String str) {
     return DigestUtils.md5Hex(str);
+  }
+
+  private boolean duplicateNews(Connection connection, News news) {
+    try {
+      PreparedStatement findDuplicate = connection
+          .prepareStatement("select newsID from news where linkHash = ?;");
+      findDuplicate.setString(1, getHash(news.getLink()));
+      ResultSet resultSet = findDuplicate.executeQuery();
+      return resultSet.next();
+    } catch (SQLException e) {
+      return false;
+    }
   }
 }
