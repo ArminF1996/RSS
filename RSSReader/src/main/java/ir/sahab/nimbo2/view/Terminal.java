@@ -2,9 +2,12 @@ package ir.sahab.nimbo2.view;
 
 import ir.sahab.nimbo2.Controller.Controller;
 import ir.sahab.nimbo2.model.DatabaseManager;
+import ir.sahab.nimbo2.model.DatabaseUpdateService;
+
 import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Terminal {
 
@@ -15,7 +18,6 @@ public class Terminal {
     return ourInstance;
   }
 
-
   private Terminal() {
     reader = new Scanner(System.in);
     DatabaseManager.getInstance();
@@ -23,6 +25,10 @@ public class Terminal {
   }
 
   private void start() {
+    DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(5);
+    DatabaseUpdateService.getInstance().setWaitTimeout(30000);
+    Thread updateThread = new Thread(DatabaseUpdateService.getInstance());
+    updateThread.start();
     boolean flag = true;
 
     while (flag) {
@@ -45,14 +51,15 @@ public class Terminal {
           viewMode();
           break;
         case "update":
-          String result = Controller.getInstance().update();
-          System.out.println(result);
+          Controller.getInstance().update();
           break;
         default:
           System.out.println("input is not valid, please try again.\n");
           break;
       }
     }
+    DatabaseUpdateService.getInstance().getThreadPoolForUpdaters().shutdownNow();
+    updateThread.interrupt();
   }
 
   private void addSite() {
@@ -134,11 +141,11 @@ public class Terminal {
     showSitesWithId();
     System.out.println("write site id.");
     int id = reader.nextInt();
-    //TODO
+    // TODO
   }
 
   private void today() {
-    //TODO
+    // TODO
   }
 
   private void searchMode() {

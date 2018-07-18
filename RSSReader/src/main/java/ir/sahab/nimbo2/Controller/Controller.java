@@ -1,9 +1,7 @@
 package ir.sahab.nimbo2.Controller;
 
-import ir.sahab.nimbo2.model.DatabaseManager;
-import ir.sahab.nimbo2.model.NewsRepository;
-import ir.sahab.nimbo2.model.Site;
-import ir.sahab.nimbo2.model.SiteRepository;
+import ir.sahab.nimbo2.model.*;
+
 import java.sql.*;
 
 public class Controller {
@@ -14,16 +12,18 @@ public class Controller {
     return ourInstance;
   }
 
-  private Controller() {
-  }
+  private Controller() {}
 
   public void addSite(String rssUrl, String siteName, String siteConfig) {
     SiteRepository.getInstance().add(new Site(siteName, rssUrl, siteConfig));
   }
 
-  public String update() {
-    //TODO
-    return null;
+  public void update() {
+    final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
+        DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
+    synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
+      LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
+    }
   }
 
   public ResultSet getSitesWithId() throws SQLException {

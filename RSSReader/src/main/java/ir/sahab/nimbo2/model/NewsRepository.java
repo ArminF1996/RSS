@@ -5,55 +5,41 @@ import java.util.*;
 
 public class NewsRepository {
 
-  private ArrayList<News> myNews;
-
   private static NewsRepository ourInstance = new NewsRepository();
 
   public static NewsRepository getInstance() {
     return ourInstance;
   }
 
-  private NewsRepository() {
-    myNews = new ArrayList<News>();
-  }
-
-  public void add(News news) {
-    myNews.add(news);
-    if (myNews.size() >= 10) {
-      try {
-        addNewsToDataBase(DatabaseManager.getInstance().getConnection());
-      } catch (SQLException e) {
-        System.err.println("can not get connection from database.");
-      }
+  public void addNewsToDatabase(News news) {
+    Connection connection = null;
+    try {
+      connection = DatabaseManager.getInstance().getConnection();
+    } catch (SQLException e) {
+      System.err.println("can not get connection from database.");
     }
-  }
+    PreparedStatement addNews;
 
-  public void addNewsToDataBase(Connection connection) {
-    for (News news : myNews) {
-      PreparedStatement addNews;
-
-      try {
-        addNews = connection.prepareStatement(
-            "INSERT INTO news(link, siteID, title, publishDate, body) values (?,?,?,?,?)");
-        addNews.setString(1, news.getLink());
-        addNews.setInt(2, news.getSiteID());
-        addNews.setString(3, news.getTitle());
-        addNews.setTimestamp(4, news.getPublishDate());
-        addNews.setString(5, news.getBody());
-        addNews.executeUpdate();
-      } catch (SQLException e) {
-        e.printStackTrace();
-        System.err.println("failed on adding " + news.getTitle() + " news to database.");
-      }
+    try {
+      addNews =
+          connection.prepareStatement(
+              "INSERT INTO news(link, siteID, title, publishDate, body) values (?,?,?,?,?)");
+      addNews.setString(1, news.getLink());
+      addNews.setInt(2, news.getSiteID());
+      addNews.setString(3, news.getTitle());
+      addNews.setTimestamp(4, news.getPublishDate());
+      addNews.setString(5, news.getBody());
+      addNews.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      System.err.println("failed on adding " + news.getTitle() + " news to database.");
     }
-    myNews.clear();
   }
 
   public void remove(Connection connection, int newsID) {
     PreparedStatement removeNews = null;
     try {
-      removeNews = connection
-          .prepareStatement("DELETE FROM news WHERE newsID = ?");
+      removeNews = connection.prepareStatement("DELETE FROM news WHERE newsID = ?");
       removeNews.setInt(1, newsID);
       removeNews.executeUpdate();
     } catch (SQLException e) {
@@ -62,23 +48,23 @@ public class NewsRepository {
   }
 
   public ResultSet searchByTitle(Connection connection, String str) throws SQLException {
-    PreparedStatement searchTitles = connection
-        .prepareStatement("select * from news where title like ?;");
+    PreparedStatement searchTitles =
+        connection.prepareStatement("select * from news where title like ?;");
     searchTitles.setString(1, "%" + str + "%");
     return searchTitles.executeQuery();
   }
 
   public ResultSet searchByBody(Connection connection, String str) throws SQLException {
-    PreparedStatement searchBodies = connection
-        .prepareStatement("select * from news where body like ?;");
+    PreparedStatement searchBodies =
+        connection.prepareStatement("select * from news where body like ?;");
     searchBodies.setString(1, "%" + str + "%");
     ResultSet resultSet = searchBodies.executeQuery();
     return resultSet;
   }
 
   public ResultSet getTenNewestNewsOfSite(Connection connection, int siteID) throws SQLException {
-    PreparedStatement searchBodies = connection
-        .prepareStatement(
+    PreparedStatement searchBodies =
+        connection.prepareStatement(
             "select * from news where siteID = ? order by publishDate DESC LIMIT 10;");
     searchBodies.setInt(1, siteID);
     ResultSet resultSet = searchBodies.executeQuery();
@@ -89,8 +75,8 @@ public class NewsRepository {
     ArrayList<String> ret = new ArrayList<>();
     try {
       Connection connection = DatabaseManager.getInstance().getConnection();
-      PreparedStatement getConfig = connection.prepareStatement(
-          "select configSettings from sites where siteID = ?");
+      PreparedStatement getConfig =
+          connection.prepareStatement("select configSettings from sites where siteID = ?");
       getConfig.setInt(1, siteID);
       ResultSet resultSet = getConfig.executeQuery();
       resultSet.next();
@@ -104,12 +90,12 @@ public class NewsRepository {
   }
 
   public ResultSet getNumberOfNewsForToday(Connection connection) {
-    //TODO
+    // TODO
     return null;
   }
 
   public ResultSet getNumberOfNewsHistoryForPreviousDays(Connection connection) {
-    //TODO
+    // TODO
     return null;
   }
 }

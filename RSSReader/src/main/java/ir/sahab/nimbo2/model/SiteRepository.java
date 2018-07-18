@@ -34,7 +34,11 @@ public class SiteRepository {
       try {
         addToDatabase(connection, site);
         findAndSetSiteIDFromDatabase(connection, site);
-        site.addNews();
+        final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
+            DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();
+        synchronized (LOCK_FOR_WAIT_AND_NOTIFY_UPDATE) {
+          LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.notify();
+        }
       } catch (SQLException e) {
         System.err.println("failed on adding " + site.getSiteName() + " site to database.");
       }
@@ -44,14 +48,14 @@ public class SiteRepository {
 
   public void addToDatabase(Connection connection, Site site) throws SQLException {
     PreparedStatement addSite = null;
-    addSite = connection.prepareStatement("INSERT INTO sites(siteName,rssUrl,configSettings)"
-        + " values (?,?,?)");
+    addSite =
+        connection.prepareStatement(
+            "INSERT INTO sites(siteName,rssUrl,configSettings)" + " values (?,?,?)");
     addSite.setString(1, site.getSiteName());
     addSite.setString(2, site.getRssUrl());
     addSite.setString(3, site.getConfigSettings());
     addSite.executeUpdate();
   }
-
 
   public void remove(Connection connection, int siteID) {
 
@@ -66,14 +70,14 @@ public class SiteRepository {
   }
 
   public void updateNewsOfSite(Connection connection) {
-    //TODO
+    // TODO
   }
 
   public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
     PreparedStatement updateConfigSetting = null;
     try {
-      updateConfigSetting = connection
-          .prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
+      updateConfigSetting =
+          connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
       updateConfigSetting.setString(1, configSetting);
       updateConfigSetting.setInt(2, siteID);
       updateConfigSetting.executeUpdate();

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-import javax.print.DocFlavor;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -20,6 +19,7 @@ public class Site {
     this.siteName = siteName;
     this.rssUrl = rssUrl;
     this.configSettings = configSettings;
+    DatabaseUpdateService.getInstance().addSiteForUpdate(this);
   }
 
   public Site(int siteID, String siteName, String rssUrl, String configSettings) {
@@ -59,7 +59,6 @@ public class Site {
     this.configSettings = configSettings;
   }
 
-
   public ArrayList<HashMap<String, String>> getRssData() {
     ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
 
@@ -87,8 +86,7 @@ public class Site {
     return rssDataMap;
   }
 
-  private Document getRssXml()
-      throws ParserConfigurationException, IOException, SAXException {
+  private Document getRssXml() throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder domBuilder = domBuilderFactory.newDocumentBuilder();
     URL url = new URL(rssUrl);
@@ -119,10 +117,13 @@ public class Site {
   public void addNews() {
     ArrayList<HashMap<String, String>> rssDataMapArray = getRssData();
     for (HashMap news : rssDataMapArray) {
-      NewsRepository.getInstance().add(
-          new News(siteID, (String) news.get("title"), (String) news.get("pubDate"),
-              (String) news.get("link")));
+      NewsRepository.getInstance()
+          .addNewsToDatabase(
+              new News(
+                  siteID,
+                  (String) news.get("title"),
+                  (String) news.get("pubDate"),
+                  (String) news.get("link")));
     }
   }
-
 }
