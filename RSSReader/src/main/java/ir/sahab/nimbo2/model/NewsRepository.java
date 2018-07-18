@@ -1,7 +1,17 @@
 package ir.sahab.nimbo2.model;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import javax.xml.crypto.Data;
 
 public class NewsRepository {
 
@@ -89,13 +99,83 @@ public class NewsRepository {
     return ret;
   }
 
-  public ResultSet getNumberOfNewsForToday(Connection connection) {
-    // TODO
-    return null;
+  public ArrayList<HashMap> getNumberOfNewsForToday(Connection connection, Date today) throws SQLException {
+    ArrayList<HashMap> resultMap = new ArrayList<>();
+    PreparedStatement getSites = connection.prepareStatement("select * from sites;");
+    ResultSet sitesRow = getSites.executeQuery();
+    while (sitesRow.next()) {
+      HashMap<String, String> hashMap = new HashMap();
+      PreparedStatement searchNews =
+          connection.prepareStatement(
+              "select * from news where siteID = "
+                  + sitesRow.getInt("siteID")
+                  + " order by publishDate desc;");
+      ResultSet searchResultOfNews = searchNews.executeQuery();
+      Integer todayNewsCounter = 0;
+      while (searchResultOfNews.next()) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(today);
+        cal2.setTime(new Date(searchResultOfNews.getTimestamp("publishDate").getTime()));
+        boolean sameDay =
+            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        if (sameDay) {
+          todayNewsCounter++;
+        } else {
+          break;
+        }
+      }
+      hashMap.put("siteID" , sitesRow.getString("siteID"));
+      hashMap.put("siteName" , sitesRow.getString("siteName"));
+      hashMap.put("numOfNews" , todayNewsCounter.toString());
+      resultMap.add(hashMap);
+    }
+    return resultMap;
   }
 
-  public ResultSet getNumberOfNewsHistoryForPreviousDays(Connection connection) {
-    // TODO
-    return null;
+  public int getNumberOfNewsHistoryForDate(Connection connection, int siteID, String dateString)
+      throws SQLException {
+    PreparedStatement searchDates =
+        connection.prepareStatement(
+            "select * from news where siteID = ? order by publishDate desc;");
+    searchDates.setInt(1, siteID);
+    ResultSet searchResult = searchDates.executeQuery();
+    Date date = getDateWithoutTime(dateString);
+    int newsCounter = 0;
+    while (searchResult.next()) {
+      Calendar cal1 = Calendar.getInstance();
+      Calendar cal2 = Calendar.getInstance();
+      cal1.setTime(date);
+      cal2.setTime(new Date(searchResult.getTimestamp("publishDate").getTime()));
+      boolean sameDay =
+          cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+              && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+      if (sameDay) {
+        newsCounter++;
+      } else if (newsCounter != 0) {
+        break;
+      }
+    }
+    return newsCounter;
+  }
+  private Date getDateWithoutTime(String dateString) {
+    ArrayList<SimpleDateFormat> formats = new ArrayList<>();
+    formats.add(new SimpleDateFormat("dd MMM yyyy"));
+    formats.add(new SimpleDateFormat("yyyy-MM-dd"));
+    java.util.Date date = null;
+    Boolean flag = false;
+    for (SimpleDateFormat formatter : formats) {
+      try {
+        date = formatter.parse(dateString);
+        break;
+      } catch (ParseException e) {
+        date = new Date();
+      }
+    }
+    if (date == null) {
+      date = new Date();
+    }
+    return date;
   }
 }

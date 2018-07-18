@@ -3,6 +3,8 @@ package ir.sahab.nimbo2.Controller;
 import ir.sahab.nimbo2.model.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Controller {
 
@@ -12,7 +14,8 @@ public class Controller {
     return ourInstance;
   }
 
-  private Controller() {}
+  private Controller() {
+  }
 
   public void addSite(String rssUrl, String siteName, String siteConfig) {
     SiteRepository.getInstance().add(new Site(siteName, rssUrl, siteConfig));
@@ -44,4 +47,18 @@ public class Controller {
     return NewsRepository.getInstance()
         .searchByTitle(DatabaseManager.getInstance().getConnection(), str);
   }
+
+  public int getHistory(int siteID, String dateString) throws SQLException {
+    return NewsRepository.getInstance()
+        .getNumberOfNewsHistoryForDate(DatabaseManager.getInstance().getConnection(), siteID,
+            dateString);
+  }
+
+  public ArrayList<HashMap> getTodayInformation() throws SQLException {
+    return NewsRepository.getInstance()
+        .getNumberOfNewsForToday(DatabaseManager.getInstance().getConnection(),
+            new Date(new Timestamp(System.currentTimeMillis()).getTime()));
+
+  }
+
 }

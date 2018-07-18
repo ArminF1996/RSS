@@ -5,6 +5,8 @@ import ir.sahab.nimbo2.model.DatabaseManager;
 import ir.sahab.nimbo2.model.DatabaseUpdateService;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
@@ -141,11 +143,28 @@ public class Terminal {
     showSitesWithId();
     System.out.println("write site id.");
     int id = reader.nextInt();
-    // TODO
+    System.out.println("write date. be like : 1990-05-22");
+    reader.nextLine();
+    String date = reader.nextLine();
+    int newsNumber;
+    try {
+      newsNumber = Controller.getInstance().getHistory(id, date);
+    } catch (SQLException e) {
+      newsNumber = 0;
+    }
+    System.out.println(newsNumber);
   }
 
   private void today() {
-    // TODO
+    ArrayList<HashMap> sitesInformation;
+    try {
+      sitesInformation = Controller.getInstance().getTodayInformation();
+    } catch (SQLException | NullPointerException e) {
+      sitesInformation = new ArrayList<>();
+    }
+    for(HashMap siteInfo : sitesInformation){
+      System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo.get("numOfNews"));
+    }
   }
 
   private void searchMode() {
