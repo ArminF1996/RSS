@@ -11,17 +11,36 @@ public class DatabaseUpdateService implements Runnable {
   private int waitTimeout;
   private ArrayList<Site> sitesInDatabase;
   private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
+  private int numberOfThreadsInPool;
 
-  public static DatabaseUpdateService getInstance() {
+    public int getNumberOfThreadsInPool() {
+        return numberOfThreadsInPool;
+    }
+
+    public static DatabaseUpdateService getInstance() {
     return ourInstance;
   }
 
   public void setWaitTimeout(int waitTimeout) {
-    this.waitTimeout = waitTimeout;
+    if (waitTimeout <= 5000) {
+      this.waitTimeout = 30000;
+    } else {
+      this.waitTimeout = waitTimeout;
+    }
+  }
+
+  public int getWaitTimeout() {
+    return waitTimeout;
   }
 
   public void setNumberOfThreadsInPool(int numberOfThreadsInPool) {
-    threadPoolForUpdaters = Executors.newFixedThreadPool(numberOfThreadsInPool);
+    if (numberOfThreadsInPool < 1) {
+      threadPoolForUpdaters = Executors.newFixedThreadPool(20);
+      this.numberOfThreadsInPool = 20;
+    } else {
+      threadPoolForUpdaters = Executors.newFixedThreadPool(numberOfThreadsInPool);
+      this.numberOfThreadsInPool = numberOfThreadsInPool;
+    }
   }
 
   public Object getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE() {
