@@ -1,6 +1,5 @@
 package ir.sahab.nimbo2.model;
 
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -33,8 +32,8 @@ public class News {
     this.newsID = newsID;
   }
 
-  public News(int siteID, int newsID, String title, Timestamp publishDate, String body,
-      String link) {
+  public News(
+      int siteID, int newsID, String title, Timestamp publishDate, String body, String link) {
     this.siteID = siteID;
     this.newsID = newsID;
     this.title = title;
@@ -50,7 +49,10 @@ public class News {
       ArrayList<String> config = NewsRepository.getInstance().getConfig(siteID);
       Elements rows = doc.getElementsByAttributeValue(config.get(0), config.get(1));
       body = rows.first().text();
-    } catch (IOException | NullPointerException | ExceptionInInitializerError | IndexOutOfBoundsException e) {
+    } catch (IOException
+        | NullPointerException
+        | ExceptionInInitializerError
+        | IndexOutOfBoundsException e) {
       body = "main body of news not found!";
     }
     return body;

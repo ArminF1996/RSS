@@ -18,7 +18,6 @@ public class Terminal {
     return ourInstance;
   }
 
-
   private Terminal() {
     reader = new Scanner(System.in);
     DatabaseManager.getInstance();
@@ -26,10 +25,10 @@ public class Terminal {
   }
 
   private void start() {
-      DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(5);
-      DatabaseUpdateService.getInstance().setWaitTimeout(30000);
-      Thread updateThread = new Thread(DatabaseUpdateService.getInstance());
-      updateThread.start();
+    DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(5);
+    DatabaseUpdateService.getInstance().setWaitTimeout(30000);
+    Thread updateThread = new Thread(DatabaseUpdateService.getInstance());
+    updateThread.start();
     boolean flag = true;
 
     while (flag) {
@@ -142,11 +141,11 @@ public class Terminal {
     showSitesWithId();
     System.out.println("write site id.");
     int id = reader.nextInt();
-    //TODO
+    // TODO
   }
 
   private void today() {
-    //TODO
+    // TODO
   }
 
   private void searchMode() {

@@ -29,8 +29,9 @@ public class DatabaseManager {
       createDatabase();
     } catch (SQLException e) {
       e.printStackTrace();
-      System.out.println("can not connecting to database for create tables,"
-          + " please check your database-state and config-File and re-run Application!");
+      System.out.println(
+          "can not connecting to database for create tables,"
+              + " please check your database-state and config-File and re-run Application!");
     }
     setupDataSource(10, 10, 20);
   }
@@ -42,9 +43,7 @@ public class DatabaseManager {
     createDatabaseEntities();
   }
 
-  /**
-   * @author ArminF96
-   */
+  /** @author ArminF96 */
   public static DatabaseManager getInstance() {
     if (databaseManager == null) {
       databaseManager = new DatabaseManager();
@@ -81,17 +80,29 @@ public class DatabaseManager {
   }
 
   private void createUrl() {
-    url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName
-        + "?autoReconnect=true&useSSL=true&useUnicode=true&characterEncoding=utf-8";
-    basicUrl = "jdbc:mysql://" + ip + ":" + port
-        + "/?user=" + username + "&password=" + password + "&useSSL=true&autoReconnect=true";
+    url =
+        "jdbc:mysql://"
+            + ip
+            + ":"
+            + port
+            + "/"
+            + dbName
+            + "?autoReconnect=true&useSSL=true&useUnicode=true&characterEncoding=utf-8";
+    basicUrl =
+        "jdbc:mysql://"
+            + ip
+            + ":"
+            + port
+            + "/?user="
+            + username
+            + "&password="
+            + password
+            + "&useSSL=true&autoReconnect=true";
   }
 
-  /**
-   * @author ArminF96
-   */
-  private void setupDataSource(int minIdleConnection, int maxIdleConnection,
-      int maxOpenConnection) {
+  /** @author ArminF96 */
+  private void setupDataSource(
+      int minIdleConnection, int maxIdleConnection, int maxOpenConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
     dataSource.setDefaultAutoCommit(true);
@@ -110,9 +121,7 @@ public class DatabaseManager {
     return this.dataSource.getConnection();
   }
 
-  /**
-   * @author ArminF96
-   */
+  /** @author ArminF96 */
   private void createDatabaseEntities() throws SQLException {
 
     String siteEntity =
@@ -125,8 +134,8 @@ public class DatabaseManager {
             + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT,"
             + " body MEDIUMTEXT CHARACTER SET utf8,"
             + "FOREIGN KEY (siteID) REFERENCES sites(siteID));";
-    try (Connection connection = DriverManager
-        .getConnection(this.url, this.username, this.password)) {
+    try (Connection connection =
+        DriverManager.getConnection(this.url, this.username, this.password)) {
       PreparedStatement createSiteEntity = connection.prepareStatement(siteEntity);
       createSiteEntity.executeUpdate();
       PreparedStatement createNewsEntity = connection.prepareStatement(newsEntity);
@@ -138,5 +147,4 @@ public class DatabaseManager {
     System.out.println("popop " + dataSource.getNumIdle());
     System.out.println(dataSource.getNumActive() + " popop");
   }
-
 }
