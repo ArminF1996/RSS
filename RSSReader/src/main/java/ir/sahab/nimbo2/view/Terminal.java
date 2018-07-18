@@ -4,10 +4,14 @@ import ir.sahab.nimbo2.Controller.Controller;
 import ir.sahab.nimbo2.model.DatabaseManager;
 import ir.sahab.nimbo2.model.DatabaseUpdateService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -27,8 +31,33 @@ public class Terminal {
   }
 
   private void start() {
-    DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(5);
-    DatabaseUpdateService.getInstance().setWaitTimeout(30000);
+    Properties configFile = new Properties();
+    InputStream fileInput = null;
+    try {
+      fileInput = new FileInputStream("config.properties");
+      configFile.load(fileInput);
+      DatabaseUpdateService.getInstance()
+          .setNumberOfThreadsInPool(
+              Integer.parseInt(configFile.getProperty("numberOfThreadsInPoolForUpdate")));
+      DatabaseUpdateService.getInstance()
+          .setWaitTimeout(Integer.parseInt(configFile.getProperty("AutoUpdateWaitTimeInMillis")));
+      for (int i = 1; i <= Integer.parseInt(configFile.getProperty("DefaultSiteNumber")); i++) {
+        String rssUrl = configFile.getProperty("Site" + i + "RssUrl").toLowerCase();
+        String siteName = configFile.getProperty("Site" + i + "Name").toLowerCase();
+        String siteConfig = configFile.getProperty("Site" + i + "TextConfig").toLowerCase();
+        Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
+      }
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if (fileInput != null) {
+        try {
+          fileInput.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
     Thread updateThread = new Thread(DatabaseUpdateService.getInstance());
     updateThread.start();
     boolean flag = true;

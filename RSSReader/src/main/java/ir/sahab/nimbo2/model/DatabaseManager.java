@@ -5,6 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.*;
+import java.util.Properties;
+
+import ir.sahab.nimbo2.Controller.Controller;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 public class DatabaseManager {
@@ -18,14 +25,31 @@ public class DatabaseManager {
   private String url;
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
-  private int maxTotalConnection = 30;
+  private int maxTotalConnection;
 
   private DatabaseManager() {
     ip = "localhost";
     port = "3306";
-    dbName = "dbNimroo";
-    username = "armin";
-    password = "nimroo";
+    Properties configFile = new Properties();
+    InputStream fileInput = null;
+    try {
+      fileInput = new FileInputStream("config.properties");
+      configFile.load(fileInput);
+      this.maxTotalConnection = Integer.parseInt(configFile.getProperty("maxTotalConnection"));
+      this.username = configFile.getProperty("DataBaseUserName");
+      this.password = configFile.getProperty("DataBasePassword");
+      this.dbName = configFile.getProperty("DataBaseName");
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if (fileInput != null) {
+        try {
+          fileInput.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
     createUrl();
     dataSource = new BasicDataSource();
     try {
@@ -91,11 +115,12 @@ public class DatabaseManager {
         + "/?user=" + username + "&password=" + password + "&useSSL=true&autoReconnect=true";
   }
 
-  /**
-   * @author ArminF96
-   */
-  private void setupDataSource(int minIdleConnection, int maxIdleConnection,
-      int maxOpenConnection, int totalConnection) {
+  /** @author ArminF96 */
+  private void setupDataSource(
+      int minIdleConnection,
+      int maxIdleConnection,
+      int maxOpenPreparedStatements,
+      int totalConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
     dataSource.setDefaultAutoCommit(true);
@@ -108,7 +133,7 @@ public class DatabaseManager {
     dataSource.setRemoveAbandonedOnBorrow(true);
     dataSource.setMinIdle(minIdleConnection);
     dataSource.setMaxIdle(maxIdleConnection);
-    dataSource.setMaxOpenPreparedStatements(maxOpenConnection);
+    dataSource.setMaxOpenPreparedStatements(maxOpenPreparedStatements);
   }
 
   public Connection getConnection() throws SQLException {
