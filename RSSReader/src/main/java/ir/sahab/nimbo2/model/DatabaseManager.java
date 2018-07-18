@@ -27,7 +27,6 @@ public class DatabaseManager {
   private DatabaseManager() {
     ip = "localhost";
     port = "3306";
-    dbName = "Nimroo";
     Properties configFile = new Properties();
     InputStream fileInput = null;
     try {
@@ -36,6 +35,7 @@ public class DatabaseManager {
       this.maxTotalConnection = Integer.parseInt(configFile.getProperty("maxTotalConnection"));
       this.username = configFile.getProperty("DataBaseUserName");
       this.password = configFile.getProperty("DataBasePassword");
+      this.dbName = configFile.getProperty("DataBaseName");
     } catch (IOException ex) {
       ex.printStackTrace();
     } finally {
