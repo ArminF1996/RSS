@@ -2,8 +2,6 @@ package ir.sahab.nimbo2.model;
 
 import java.sql.*;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.commons.dbcp2.PoolableConnection;
-import org.apache.commons.dbcp2.PoolingConnection;
 
 public class DatabaseManager {
 
@@ -16,7 +14,7 @@ public class DatabaseManager {
   private String url;
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
-  private int maxTotalConnection= 30;
+  private int maxTotalConnection = 30;
 
   private DatabaseManager() {
     ip = "localhost";
@@ -33,14 +31,14 @@ public class DatabaseManager {
       System.out.println("can not connecting to database for create tables,"
           + " please check your database-state and config-File and re-run Application!");
     }
-    setupDataSource(10, 10, 20 , maxTotalConnection);
+    setupDataSource(10, 10, 20, maxTotalConnection);
   }
 
   private void createDatabase() throws SQLException {
     Connection Conn = DriverManager.getConnection(basicUrl);
     Statement s = Conn.createStatement();
     s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
-    s.executeUpdate("set global max_connections = " + maxTotalConnection*2);
+    s.executeUpdate("set global max_connections = " + maxTotalConnection * 2);
     createDatabaseEntities();
   }
 
@@ -93,7 +91,7 @@ public class DatabaseManager {
    * @author ArminF96
    */
   private void setupDataSource(int minIdleConnection, int maxIdleConnection,
-      int maxOpenConnection , int totalConnection) {
+      int maxOpenConnection, int totalConnection) {
     createUrl();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
     dataSource.setDefaultAutoCommit(true);
