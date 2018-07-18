@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import javax.xml.crypto.Data;
 
 public class NewsRepository {
 
@@ -107,9 +106,8 @@ public class NewsRepository {
       HashMap<String, String> hashMap = new HashMap();
       PreparedStatement searchNews =
           connection.prepareStatement(
-              "select * from news where siteID = "
-                  + sitesRow.getInt("siteID")
-                  + " order by publishDate desc;");
+              "select * from news where siteID = ? order by publishDate desc;");
+      searchNews.setInt(1,sitesRow.getInt("siteID"));
       ResultSet searchResultOfNews = searchNews.executeQuery();
       Integer todayNewsCounter = 0;
       while (searchResultOfNews.next()) {

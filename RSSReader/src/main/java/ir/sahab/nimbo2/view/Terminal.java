@@ -10,10 +10,8 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Terminal {
 
