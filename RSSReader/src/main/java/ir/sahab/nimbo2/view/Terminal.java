@@ -34,10 +34,11 @@ public class Terminal {
     try {
       fileInput = new FileInputStream("config.properties");
       configFile.load(fileInput);
-      DatabaseManager.getInstance().setUsername(configFile.getProperty("DataBaseUserName"));
-      DatabaseManager.getInstance().setPassword(configFile.getProperty("DataBasePassword"));
-      DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(Integer.parseInt(configFile.getProperty("numberOfThreadsInPoolForUpdate")));
-      DatabaseUpdateService.getInstance().setWaitTimeout(Integer.parseInt(configFile.getProperty("AutoUpdateWaitTimeInMillis")));
+      DatabaseUpdateService.getInstance()
+          .setNumberOfThreadsInPool(
+              Integer.parseInt(configFile.getProperty("numberOfThreadsInPoolForUpdate")));
+      DatabaseUpdateService.getInstance()
+          .setWaitTimeout(Integer.parseInt(configFile.getProperty("AutoUpdateWaitTimeInMillis")));
       for (int i = 1; i <= Integer.parseInt(configFile.getProperty("DefaultSiteNumber")); i++) {
         String rssUrl = configFile.getProperty("Site" + i + "RssUrl").toLowerCase();
         String siteName = configFile.getProperty("Site" + i + "Name").toLowerCase();
