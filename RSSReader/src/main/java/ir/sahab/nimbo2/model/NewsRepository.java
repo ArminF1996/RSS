@@ -98,7 +98,8 @@ public class NewsRepository {
     return ret;
   }
 
-  public ArrayList<HashMap> getNumberOfNewsForToday(Connection connection, Date today) throws SQLException {
+  public ArrayList<HashMap> getNumberOfNewsForToday(Connection connection, Date today)
+      throws SQLException {
     ArrayList<HashMap> resultMap = new ArrayList<>();
     PreparedStatement getSites = connection.prepareStatement("select * from sites;");
     ResultSet sitesRow = getSites.executeQuery();
@@ -107,7 +108,7 @@ public class NewsRepository {
       PreparedStatement searchNews =
           connection.prepareStatement(
               "select * from news where siteID = ? order by publishDate desc;");
-      searchNews.setInt(1,sitesRow.getInt("siteID"));
+      searchNews.setInt(1, sitesRow.getInt("siteID"));
       ResultSet searchResultOfNews = searchNews.executeQuery();
       Integer todayNewsCounter = 0;
       while (searchResultOfNews.next()) {
@@ -124,9 +125,9 @@ public class NewsRepository {
           break;
         }
       }
-      hashMap.put("siteID" , sitesRow.getString("siteID"));
-      hashMap.put("siteName" , sitesRow.getString("siteName"));
-      hashMap.put("numOfNews" , todayNewsCounter.toString());
+      hashMap.put("siteID", sitesRow.getString("siteID"));
+      hashMap.put("siteName", sitesRow.getString("siteName"));
+      hashMap.put("numOfNews", todayNewsCounter.toString());
       resultMap.add(hashMap);
     }
     return resultMap;
@@ -157,6 +158,7 @@ public class NewsRepository {
     }
     return newsCounter;
   }
+
   private Date getDateWithoutTime(String dateString) {
     ArrayList<SimpleDateFormat> formats = new ArrayList<>();
     formats.add(new SimpleDateFormat("dd MMM yyyy"));

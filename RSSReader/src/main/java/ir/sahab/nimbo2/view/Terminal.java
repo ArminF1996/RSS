@@ -189,8 +189,13 @@ public class Terminal {
     } catch (SQLException | NullPointerException e) {
       sitesInformation = new ArrayList<>();
     }
-    for(HashMap siteInfo : sitesInformation){
-      System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo.get("numOfNews"));
+    for (HashMap siteInfo : sitesInformation) {
+      System.out.println(
+          siteInfo.get("siteID")
+              + "  "
+              + siteInfo.get("siteName")
+              + "  "
+              + siteInfo.get("numOfNews"));
     }
   }
 
