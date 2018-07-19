@@ -2,7 +2,10 @@ package ir.sahab.nimbo2.Controller;
 
 import ir.sahab.nimbo2.model.*;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,14 +17,17 @@ public class Controller {
     return ourInstance;
   }
 
-  private Controller() {}
+  private Controller() {
+  }
 
   public void addExistingSitesToUpdateService() throws SQLException {
     DatabaseUpdateService.getInstance().addSitesFromDatabaseToUpdateService(this.getSitesWithId());
   }
 
   public String addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
-    return SiteRepository.getInstance().addSitesToDatabase(DatabaseManager.getInstance().getConnection(), new Site(siteName, rssUrl, siteConfig));
+    return SiteRepository.getInstance()
+        .addSitesToDatabase(DatabaseManager.getInstance().getConnection(),
+            new Site(siteName, rssUrl, siteConfig));
   }
 
   public void update() {

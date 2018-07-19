@@ -8,10 +8,7 @@ import java.sql.Statement;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
 import java.util.Properties;
-
-import ir.sahab.nimbo2.Controller.Controller;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 public class DatabaseManager {
@@ -40,13 +37,13 @@ public class DatabaseManager {
       this.password = configFile.getProperty("DataBasePassword");
       this.dbName = configFile.getProperty("DataBaseName");
     } catch (IOException ex) {
-      ex.printStackTrace();
+      System.err.println("end of file Error, please check the config file.");
     } finally {
       if (fileInput != null) {
         try {
           fileInput.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          System.err.println("end of file Error, please check the config file.");
         }
       }
     }
@@ -55,10 +52,9 @@ public class DatabaseManager {
     try {
       createDatabase();
     } catch (SQLException e) {
-      e.printStackTrace();
       System.out.println(
           "can not connecting to database for create tables,"
-              + " please check your database-state and config-File and re-run Application!");
+              + " please check your database-state and config-File!");
     }
     setupDataSource(10, 10, 20, maxTotalConnection);
   }
@@ -71,7 +67,9 @@ public class DatabaseManager {
     createDatabaseEntities();
   }
 
-  /** @author ArminF96 */
+  /**
+   * @author ArminF96
+   */
   public static DatabaseManager getInstance() {
     if (databaseManager == null) {
       databaseManager = new DatabaseManager();
@@ -155,7 +153,9 @@ public class DatabaseManager {
     return this.dataSource.getConnection();
   }
 
-  /** @author ArminF96 */
+  /**
+   * @author ArminF96
+   */
   private void createDatabaseEntities() throws SQLException {
 
     String siteEntity =

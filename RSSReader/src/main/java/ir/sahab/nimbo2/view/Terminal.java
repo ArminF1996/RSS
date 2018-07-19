@@ -7,7 +7,8 @@ import ir.sahab.nimbo2.model.DatabaseUpdateService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -52,8 +53,9 @@ public class Terminal {
       if (fileInput != null) {
         try {
           fileInput.close();
-        } catch (IOException e) {
-          e.printStackTrace();
+          Controller.getInstance().addExistingSitesToUpdateService();
+        } catch (SQLException | IOException e) {
+          System.err.println("some error happen from connecting to database, check the logfile!");
         }
       }
     }
@@ -233,7 +235,7 @@ public class Terminal {
     System.out.println("write something.");
     reader.nextLine();
     String input = reader.nextLine().toLowerCase();
-    ResultSet resultSet = null;
+    ResultSet resultSet;
     try {
       resultSet = Controller.getInstance().findNewsByBody(input);
     } catch (SQLException e) {

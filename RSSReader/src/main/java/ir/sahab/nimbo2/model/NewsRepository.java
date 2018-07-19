@@ -45,7 +45,6 @@ public class NewsRepository {
       addNews.setString(6, getHash(news.getLink()));
       addNews.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
       System.err.println("failed on adding " + news.getTitle() + " news to database.");
     }
   }
