@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -64,10 +65,10 @@ public class News {
 
   private Date reFormatPublishDate(String pubDate) {
     ArrayList<SimpleDateFormat> formats = new ArrayList<>();
-    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm"));
-    formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss"));
-    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss"));
-    formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"));
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm Z"));
+    formats.add(new SimpleDateFormat("dd MMM yyyy hh:mm:ss Z"));
+    formats.add(new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z"));
+    formats.add(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss Z"));
     Date date = null;
     if (pubDate == null) {
       pubDate = (new Date()).toString();
