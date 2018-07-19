@@ -167,7 +167,7 @@ public class DatabaseManager {
             + "link TEXT CHARACTER SET utf8,siteID int,"
             + " title TEXT CHARACTER SET utf8, publishDate TINYTEXT,"
             + " body MEDIUMTEXT CHARACTER SET utf8, linkHash varchar(40),"
-            + "FOREIGN KEY (siteID) REFERENCES sites(siteID));";
+            + "FOREIGN KEY (siteID) REFERENCES sites(siteID) ON DELETE CASCADE);";
     try (Connection connection =
         DriverManager.getConnection(this.url, this.username, this.password)) {
       PreparedStatement createSiteEntity = connection.prepareStatement(siteEntity);
