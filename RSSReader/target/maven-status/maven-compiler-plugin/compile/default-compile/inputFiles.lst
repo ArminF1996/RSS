@@ -1,4 +1,8 @@
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/App.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/Client.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/DbConnector.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/RssData.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/view/Terminal.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseManager.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/News.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/Site.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/Controller/Controller.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/SiteRepository.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/NewsRepository.java
+/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseUpdateService.java
