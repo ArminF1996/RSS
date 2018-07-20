@@ -64,7 +64,7 @@ public class SiteRepository {
   }
 
   public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
-    PreparedStatement updateConfigSetting = null;
+    PreparedStatement updateConfigSetting;
     try {
       updateConfigSetting =
           connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
@@ -91,7 +91,7 @@ public class SiteRepository {
   }
 
   public void findAndSetSiteIDFromDatabase(Connection connection, Site site) {
-    PreparedStatement getSiteID = null;
+    PreparedStatement getSiteID;
     try {
       getSiteID = connection.prepareStatement("select siteID from sites where siteName = ?;");
       getSiteID.setString(1, site.getSiteName());

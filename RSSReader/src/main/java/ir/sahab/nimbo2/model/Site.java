@@ -66,7 +66,7 @@ public class Site {
   public ArrayList<HashMap<String, String>> getRssData() {
     ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
 
-    Document domTree = null;
+    Document domTree;
     try {
       domTree = getRssXml();
     } catch (ParserConfigurationException | IOException | SAXException e) {

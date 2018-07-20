@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class Terminal {
 
   private Scanner reader;
+  final static Logger logger = Logger.getLogger(Terminal.class);
   private static Terminal ourInstance = new Terminal();
 
   public static Terminal getInstance() {
@@ -26,6 +29,8 @@ public class Terminal {
   private Terminal() {
     reader = new Scanner(System.in);
     DatabaseManager.getInstance();
+    PropertyConfigurator.configure("log4j.properties");
+    logger.debug("test debug");
     this.start();
   }
 
@@ -194,7 +199,9 @@ public class Terminal {
   }
 
   private void history() {
-    showSitesWithId();
+    if (!showSitesWithId()) {
+      return;
+    }
     System.out.println("write site id.");
     int id = reader.nextInt();
     System.out.println("write date. be like : 1990-05-22");
@@ -315,7 +322,7 @@ public class Terminal {
             searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
       }
       if (number == 0) {
-        System.err.println("no site exist to remove.");
+        System.err.println("no site exist.");
         return false;
       }
     } catch (SQLException | NullPointerException e) {
