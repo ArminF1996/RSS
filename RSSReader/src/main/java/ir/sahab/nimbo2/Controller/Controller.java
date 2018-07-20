@@ -30,6 +30,10 @@ public class Controller {
             new Site(siteName, rssUrl, siteConfig));
   }
 
+  public void removeSite(int siteID) throws SQLException {
+    SiteRepository.getInstance().remove(DatabaseManager.getInstance().getConnection(), siteID);
+  }
+
   public void update() {
     final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE =
         DatabaseUpdateService.getInstance().getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE();

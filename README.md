@@ -1,4 +1,4 @@
-# Cruller: for news agency (support utf-8 encode).
+# Curler: for news agency (support utf-8 encode).
 
 ## the database schema of cruller is shown below, this aplication compatible with **mysql** database.
 

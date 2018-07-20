@@ -48,12 +48,12 @@ public class SiteRepository {
     addSite.setString(3, site.getConfigSettings());
     addSite.setString(4, getHash(site.getRssUrl()));
     addSite.executeUpdate();
-    return "site added successfully.";
+    return "site added to database.";
   }
 
   public void remove(Connection connection, int siteID) {
 
-    PreparedStatement removeSite = null;
+    PreparedStatement removeSite;
     try {
       removeSite = connection.prepareStatement("DELETE FROM sites WHERE siteID = ? ");
       removeSite.setInt(1, siteID);
@@ -64,7 +64,7 @@ public class SiteRepository {
   }
 
   public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
-    PreparedStatement updateConfigSetting = null;
+    PreparedStatement updateConfigSetting;
     try {
       updateConfigSetting =
           connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
@@ -78,8 +78,8 @@ public class SiteRepository {
 
   public ResultSet showAllSites(Connection connection) {
 
-    PreparedStatement searchBodies = null;
-    ResultSet searchResult = null;
+    PreparedStatement searchBodies;
+    ResultSet searchResult;
     try {
       searchBodies = connection.prepareStatement("select * from sites;");
       searchResult = searchBodies.executeQuery();
@@ -91,7 +91,7 @@ public class SiteRepository {
   }
 
   public void findAndSetSiteIDFromDatabase(Connection connection, Site site) {
-    PreparedStatement getSiteID = null;
+    PreparedStatement getSiteID;
     try {
       getSiteID = connection.prepareStatement("select siteID from sites where siteName = ?;");
       getSiteID.setString(1, site.getSiteName());
