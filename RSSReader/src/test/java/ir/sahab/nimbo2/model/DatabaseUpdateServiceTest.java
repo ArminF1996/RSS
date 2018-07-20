@@ -3,8 +3,6 @@ package ir.sahab.nimbo2.model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class DatabaseUpdateServiceTest {
 
   @Test
@@ -29,16 +27,4 @@ public class DatabaseUpdateServiceTest {
     DatabaseUpdateService.getInstance().setNumberOfThreadsInPool(-4);
     Assert.assertEquals(20, DatabaseUpdateService.getInstance().getNumberOfThreadsInPool());
   }
-
-  @Test
-  public void getLOCK_FOR_WAIT_AND_NOTIFY_UPDATE() {}
-
-  @Test
-  public void addSiteForUpdate() {}
-
-  @Test
-  public void getThreadPoolForUpdaters() {}
-
-  @Test
-  public void run() {}
 }
