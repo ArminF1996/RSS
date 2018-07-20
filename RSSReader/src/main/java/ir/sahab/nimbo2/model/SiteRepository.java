@@ -53,7 +53,7 @@ public class SiteRepository {
 
   public void remove(Connection connection, int siteID) {
 
-    PreparedStatement removeSite = null;
+    PreparedStatement removeSite;
     try {
       removeSite = connection.prepareStatement("DELETE FROM sites WHERE siteID = ? ");
       removeSite.setInt(1, siteID);
@@ -78,8 +78,8 @@ public class SiteRepository {
 
   public ResultSet showAllSites(Connection connection) {
 
-    PreparedStatement searchBodies = null;
-    ResultSet searchResult = null;
+    PreparedStatement searchBodies;
+    ResultSet searchResult;
     try {
       searchBodies = connection.prepareStatement("select * from sites;");
       searchResult = searchBodies.executeQuery();
