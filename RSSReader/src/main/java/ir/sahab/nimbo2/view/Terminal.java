@@ -67,6 +67,7 @@ public class Terminal {
       System.out.println(
           "Write \"Exit\" to close program.\n"
               + "write \"add\" to add site.\n"
+              + "write \"remove\" to remove site.\n"
               + "write \"view\" to go to view mode.\n"
               + "write \"update\" to updating current data.\n");
 
@@ -78,6 +79,9 @@ public class Terminal {
           break;
         case "add":
           addSite();
+          break;
+        case "remove":
+          removeSite();
           break;
         case "view":
           viewMode();
@@ -111,6 +115,20 @@ public class Terminal {
     } catch (SQLException e) {
       System.err
           .println("currently we can not add sites to database, please check the configFile.");
+    }
+  }
+
+  private void removeSite() {
+    if (!showSitesWithId()) {
+      return;
+    }
+    System.out.println("write site id.");
+    int id = reader.nextInt();
+    try {
+      Controller.getInstance().removeSite(id);
+      Controller.getInstance().addExistingSitesToUpdateService();
+    } catch (SQLException e) {
+      System.err.println("failed on deleting this site from database.");
     }
   }
 
@@ -289,17 +307,24 @@ public class Terminal {
       System.out.println("the list of sites is empty.");
       return false;
     }
+    int number = 0;
     try {
       while (searchResult.next()) {
+        number++;
         System.out.println(
             searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
       }
-    } catch (SQLException e) {
+      if (number == 0) {
+        System.err.println("no site exist to remove.");
+        return false;
+      }
+    } catch (SQLException | NullPointerException e) {
       System.err.println("can not show the list of sites right now, please try again later.");
       return false;
     }
     return true;
   }
+
 
   public static void main(String[] args) {
   }

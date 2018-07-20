@@ -48,7 +48,7 @@ public class SiteRepository {
     addSite.setString(3, site.getConfigSettings());
     addSite.setString(4, getHash(site.getRssUrl()));
     addSite.executeUpdate();
-    return "site added successfully.";
+    return "site added to database.";
   }
 
   public void remove(Connection connection, int siteID) {
