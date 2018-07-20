@@ -3,6 +3,7 @@ package ir.sahab.nimbo2.model;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
@@ -63,16 +64,12 @@ public class Site {
     this.configSettings = configSettings;
   }
 
-  public ArrayList<HashMap<String, String>> getRssData() {
+  public ArrayList<HashMap<String, String>> getRssData()
+      throws IOException, SAXException, ParserConfigurationException {
     ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
 
     Document domTree;
-    try {
-      domTree = getRssXml();
-    } catch (ParserConfigurationException | IOException | SAXException e) {
-      System.err.println("filed on Parsing xml, check your network connection.");
-      return rssDataMap;
-    }
+    domTree = getRssXml();
     for (int i = 0; i < domTree.getElementsByTagName("item").getLength(); i++) {
       rssDataMap.add(new HashMap<>());
       for (int j = 0;
@@ -118,7 +115,7 @@ public class Site {
         .getTextContent();
   }
 
-  public void addNews() {
+  public void addNews() throws ParserConfigurationException, SAXException, IOException, SQLException {
     ArrayList<HashMap<String, String>> rssDataMapArray = getRssData();
     for (HashMap news : rssDataMapArray) {
       NewsRepository.getInstance()

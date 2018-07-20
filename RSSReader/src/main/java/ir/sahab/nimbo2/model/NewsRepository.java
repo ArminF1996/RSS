@@ -21,43 +21,31 @@ public class NewsRepository {
     return ourInstance;
   }
 
-  public void addNewsToDatabase(News news) {
+  public void addNewsToDatabase(News news) throws SQLException {
     Connection connection;
-    try {
-      connection = DatabaseManager.getInstance().getConnection();
-    } catch (SQLException e) {
-      System.err.println("can not get connection from database.");
-      return;
-    }
+    connection = DatabaseManager.getInstance().getConnection();
+
     if (duplicateNews(connection, news)) {
       return;
     }
     PreparedStatement addNews;
-    try {
-      addNews =
-          connection.prepareStatement(
-              "INSERT INTO news(link, siteID, title, publishDate, body, linkHash) values (?,?,?,?,?,?)");
-      addNews.setString(1, news.getLink());
-      addNews.setInt(2, news.getSiteID());
-      addNews.setString(3, news.getTitle());
-      addNews.setTimestamp(4, news.getPublishDate());
-      addNews.setString(5, news.getBody());
-      addNews.setString(6, getHash(news.getLink()));
-      addNews.executeUpdate();
-    } catch (SQLException e) {
-      System.err.println("failed on adding " + news.getTitle() + " news to database.");
-    }
+    addNews =
+        connection.prepareStatement(
+            "INSERT INTO news(link, siteID, title, publishDate, body, linkHash) values (?,?,?,?,?,?)");
+    addNews.setString(1, news.getLink());
+    addNews.setInt(2, news.getSiteID());
+    addNews.setString(3, news.getTitle());
+    addNews.setTimestamp(4, news.getPublishDate());
+    addNews.setString(5, news.getBody());
+    addNews.setString(6, getHash(news.getLink()));
+    addNews.executeUpdate();
   }
 
-  public void remove(Connection connection, int newsID) {
-    PreparedStatement removeNews = null;
-    try {
-      removeNews = connection.prepareStatement("DELETE FROM news WHERE newsID = ?");
-      removeNews.setInt(1, newsID);
-      removeNews.executeUpdate();
-    } catch (SQLException e) {
-      System.err.println("failed on deleting this site from database.");
-    }
+  public void remove(Connection connection, int newsID) throws SQLException {
+    PreparedStatement removeNews;
+    removeNews = connection.prepareStatement("DELETE FROM news WHERE newsID = ?");
+    removeNews.setInt(1, newsID);
+    removeNews.executeUpdate();
   }
 
   public ResultSet searchByTitle(Connection connection, String str) throws SQLException {

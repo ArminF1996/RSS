@@ -51,42 +51,29 @@ public class SiteRepository {
     return "site added to database.";
   }
 
-  public void remove(Connection connection, int siteID) {
+  public void remove(Connection connection, int siteID) throws SQLException {
 
-    PreparedStatement removeSite;
-    try {
-      removeSite = connection.prepareStatement("DELETE FROM sites WHERE siteID = ? ");
-      removeSite.setInt(1, siteID);
-      removeSite.executeUpdate();
-    } catch (SQLException e) {
-      System.err.println("failed on deleting this site from database.");
-    }
+    PreparedStatement removeSite = connection
+        .prepareStatement("DELETE FROM sites WHERE siteID = ? ");
+    removeSite.setInt(1, siteID);
+    removeSite.executeUpdate();
   }
 
-  public void updateConfigOfSite(Connection connection, int siteID, String configSetting) {
-    PreparedStatement updateConfigSetting;
-    try {
-      updateConfigSetting =
-          connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
-      updateConfigSetting.setString(1, configSetting);
-      updateConfigSetting.setInt(2, siteID);
-      updateConfigSetting.executeUpdate();
-    } catch (SQLException e) {
-      System.err.println("failed on updating configSetting of this site in database.");
-    }
+  public void updateConfigOfSite(Connection connection, int siteID, String configSetting)
+      throws SQLException {
+    PreparedStatement updateConfigSetting =
+        connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
+    updateConfigSetting.setString(1, configSetting);
+    updateConfigSetting.setInt(2, siteID);
+    updateConfigSetting.executeUpdate();
   }
 
-  public ResultSet showAllSites(Connection connection) {
+  public ResultSet showAllSites(Connection connection) throws SQLException {
 
     PreparedStatement searchBodies;
     ResultSet searchResult;
-    try {
-      searchBodies = connection.prepareStatement("select * from sites;");
-      searchResult = searchBodies.executeQuery();
-    } catch (SQLException e) {
-      System.err.println("can not show the list of sites right now, please try again later.");
-      return null;
-    }
+    searchBodies = connection.prepareStatement("select * from sites;");
+    searchResult = searchBodies.executeQuery();
     return searchResult;
   }
 

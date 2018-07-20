@@ -1,10 +1,15 @@
 package ir.sahab.nimbo2.model;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.xml.sax.SAXException;
 
 public class DatabaseUpdateService implements Runnable {
 
@@ -14,6 +19,7 @@ public class DatabaseUpdateService implements Runnable {
   private ArrayList<Site> sitesInDatabase;
   private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
   private int numberOfThreadsInPool;
+  final static Logger logger = Logger.getLogger(DatabaseUpdateService.class);
 
   public int getNumberOfThreadsInPool() {
     return numberOfThreadsInPool;
@@ -50,6 +56,7 @@ public class DatabaseUpdateService implements Runnable {
   }
 
   private DatabaseUpdateService() {
+    PropertyConfigurator.configure("log4j.properties");
     sitesInDatabase = new ArrayList<>();
     LOCK_FOR_WAIT_AND_NOTIFY_UPDATE = new Object();
   }
@@ -85,6 +92,7 @@ public class DatabaseUpdateService implements Runnable {
         try {
           LOCK_FOR_WAIT_AND_NOTIFY_UPDATE.wait(waitTimeout);
         } catch (InterruptedException e) {
+          logger.error("InterruptedException happen!", e);
           break;
         }
       }
@@ -101,7 +109,11 @@ public class DatabaseUpdateService implements Runnable {
 
     @Override
     public void run() {
-      sitesInDatabase.get(sitePlaceInArray).addNews();
+      try {
+        sitesInDatabase.get(sitePlaceInArray).addNews();
+      } catch (SAXException | ParserConfigurationException | IOException | SQLException e) {
+        logger.error("some error happen!", e);
+      }
     }
   }
 }

@@ -21,6 +21,7 @@ public class Controller {
   }
 
   public void addExistingSitesToUpdateService() throws SQLException {
+    DatabaseManager.getInstance().createDatabase();
     DatabaseUpdateService.getInstance().addSitesFromDatabaseToUpdateService(this.getSitesWithId());
   }
 

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class DatabaseManager {
 
@@ -23,10 +25,10 @@ public class DatabaseManager {
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
   private int maxTotalConnection;
+  final static Logger logger = Logger.getLogger(DatabaseManager.class);
 
   private DatabaseManager() {
-    ip = "localhost";
-    port = "3306";
+    PropertyConfigurator.configure("log4j.properties");
     Properties configFile = new Properties();
     InputStream fileInput = null;
     try {
@@ -36,14 +38,16 @@ public class DatabaseManager {
       this.username = configFile.getProperty("DataBaseUserName");
       this.password = configFile.getProperty("DataBasePassword");
       this.dbName = configFile.getProperty("DataBaseName");
+      this.ip = configFile.getProperty("DataBaseIp");;
+      this.port = configFile.getProperty("DataBasePort");;
     } catch (IOException ex) {
-      System.err.println("end of file Error, please check the config file.");
+      logger.error("end of file Error, please check the config file.", ex);
     } finally {
       if (fileInput != null) {
         try {
           fileInput.close();
         } catch (IOException e) {
-          System.err.println("end of file Error, please check the config file.");
+          logger.error("end of file Error, please check the config file.", e);
         }
       }
     }
@@ -52,14 +56,12 @@ public class DatabaseManager {
     try {
       createDatabase();
     } catch (SQLException e) {
-      System.out.println(
-          "can not connecting to database for create tables,"
-              + " please check your database-state and config-File!");
+      logger.error("database connection Error, please check the config file.", e);
     }
-    setupDataSource(10, 10, 20, maxTotalConnection);
+    setupDataSource(5, 10, 30, maxTotalConnection);
   }
 
-  private void createDatabase() throws SQLException {
+  public void createDatabase() throws SQLException {
     Connection Conn = DriverManager.getConnection(basicUrl);
     Statement s = Conn.createStatement();
     s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);

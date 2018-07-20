@@ -30,7 +30,6 @@ public class Terminal {
     reader = new Scanner(System.in);
     DatabaseManager.getInstance();
     PropertyConfigurator.configure("log4j.properties");
-    logger.debug("test debug");
     this.start();
   }
 
@@ -52,15 +51,16 @@ public class Terminal {
         Controller.getInstance().addSite(rssUrl, siteName, siteConfig);
       }
     } catch (IOException | SQLException ex) {
-      System.err
-          .println("currently we can not add sites to database, please check the configFile.");
+      System.err.println("some error happen, check the log file.");
+      logger.error("currently we can not add sites to database, please check the configFile.", ex);
     } finally {
       if (fileInput != null) {
         try {
           fileInput.close();
           Controller.getInstance().addExistingSitesToUpdateService();
         } catch (SQLException | IOException e) {
-          System.err.println("some error happen from connecting to database, check the logfile!");
+          System.err.println("some error happen, check the log file.");
+          logger.error("some error happen from connecting to database, check the logfile!", e);
         }
       }
     }
@@ -116,10 +116,11 @@ public class Terminal {
     String siteConfig = reader.nextLine().toLowerCase();
 
     try {
-      System.err.println(Controller.getInstance().addSite(rssUrl, siteName, siteConfig));
+      System.out.println((Controller.getInstance().addSite(rssUrl, siteName, siteConfig)));
     } catch (SQLException e) {
-      System.err
-          .println("currently we can not add sites to database, please check the configFile.");
+      System.err.println("some error happen, check the log file.");
+      logger.error(
+          "currently we can not add sites to database, please check log file.", e);
     }
   }
 
@@ -133,7 +134,9 @@ public class Terminal {
       Controller.getInstance().removeSite(id);
       Controller.getInstance().addExistingSitesToUpdateService();
     } catch (SQLException e) {
-      System.err.println("failed on deleting this site from database.");
+      System.err.println("some error happen, check the log file.");
+      logger.error(
+          "failed on deleting this site from database, please check the database connection.", e);
     }
   }
 
@@ -179,11 +182,13 @@ public class Terminal {
     }
     System.out.println("write site id.");
     int id = reader.nextInt();
-    ResultSet resultSet = null;
+    ResultSet resultSet;
     try {
       resultSet = Controller.getInstance().getTenLatestNews(id);
     } catch (SQLException e) {
-      System.err.println("some error happen from connecting to database, check the logfile!");
+      System.err.println("some error happen, check the log file.");
+      logger.error("some error happen from connecting to database, check the database connection!",
+          e);
       return;
     }
 
@@ -194,7 +199,8 @@ public class Terminal {
         }
       }
     } catch (SQLException e) {
-      System.err.println("latest news not found!");
+      System.err.println("some error happen, check the log file.");
+      logger.warn("latest news not found!", e);
     }
   }
 
@@ -212,6 +218,8 @@ public class Terminal {
       newsNumber = Controller.getInstance().getHistory(id, date);
     } catch (SQLException e) {
       newsNumber = 0;
+      System.err.println("some error happen, check the log file.");
+      logger.warn("some error happen from database connection.", e);
     }
     System.out.println(newsNumber);
   }
@@ -222,6 +230,8 @@ public class Terminal {
       sitesInformation = Controller.getInstance().getTodayInformation();
     } catch (SQLException | NullPointerException e) {
       sitesInformation = new ArrayList<>();
+      System.err.println("some error happen, check the log file.");
+      logger.error("some error happen from database connection.", e);
     }
     for (HashMap siteInfo : sitesInformation) {
       System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo
@@ -264,7 +274,9 @@ public class Terminal {
     try {
       resultSet = Controller.getInstance().findNewsByBody(input);
     } catch (SQLException e) {
-      System.err.println("some error happen from connecting to database, check the logfile!");
+      System.err.println("some error happen, check the log file.");
+      logger.error("some error happen from connecting to database, check the database connection!",
+          e);
       return;
     }
 
@@ -275,7 +287,8 @@ public class Terminal {
         }
       }
     } catch (SQLException e) {
-      System.err.println("not found any news with searchByBody!");
+      System.err.println("some error happen, check the log file.");
+      logger.error("not found any news with searchByBody!", e);
     }
   }
 
@@ -283,11 +296,12 @@ public class Terminal {
     System.out.println("write something.");
     reader.nextLine();
     String input = reader.nextLine().toLowerCase();
-    ResultSet resultSet = null;
+    ResultSet resultSet;
     try {
       resultSet = Controller.getInstance().findNewsByTitle(input);
     } catch (SQLException e) {
-      System.err.println("some error happen from connecting to database, check the logfile!");
+      System.err.println("some error happen, check the log file.");
+      logger.error("some error happen from connecting to database!", e);
       return;
     }
 
@@ -298,7 +312,8 @@ public class Terminal {
         }
       }
     } catch (SQLException e) {
-      System.err.println("not found any news with searchByTitle!");
+      logger.warn("not found any news with searchByTitle!", e);
+      System.err.println("some error happen, check the log file.");
     }
   }
 
@@ -307,7 +322,8 @@ public class Terminal {
     try {
       searchResult = Controller.getInstance().getSitesWithId();
     } catch (SQLException e) {
-      System.err.println("can not show the list of sites right now, please try again later.");
+      logger.error("can not show the list of sites right now, please try again later.", e);
+      System.err.println("some error happen, check the log file.");
       return false;
     }
     if (searchResult == null) {
@@ -322,11 +338,12 @@ public class Terminal {
             searchResult.getInt("siteID") + ":" + searchResult.getString("siteName"));
       }
       if (number == 0) {
-        System.err.println("no site exist.");
+        System.out.println("no site exist.");
         return false;
       }
     } catch (SQLException | NullPointerException e) {
-      System.err.println("can not show the list of sites right now, please try again later.");
+      logger.error("some error happen to database connection or maybe null pointer ex.", e);
+      System.err.println("some error happen, check the log file.");
       return false;
     }
     return true;
