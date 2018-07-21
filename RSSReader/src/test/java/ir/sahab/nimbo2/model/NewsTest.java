@@ -7,9 +7,10 @@ public class NewsTest {
 
   @Test
   public void validInputsForConstructor() {
+
     News testNews =
         new News(
-            1,
+            2,
             "سد «کوکبیه» شازند قربانی گرفت",
             "2018-07-20 14:33:14",
             "https://www.isna.ir/news/97042915819/سد-کوکبیه-شازند-قربانی-گرفت");

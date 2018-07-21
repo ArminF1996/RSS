@@ -59,15 +59,6 @@ public class SiteRepository {
     removeSite.executeUpdate();
   }
 
-  public void updateConfigOfSite(Connection connection, int siteID, String configSetting)
-      throws SQLException {
-    PreparedStatement updateConfigSetting =
-        connection.prepareStatement("UPDATE sites SET configSettings = ? WHERE siteID = ?");
-    updateConfigSetting.setString(1, configSetting);
-    updateConfigSetting.setInt(2, siteID);
-    updateConfigSetting.executeUpdate();
-  }
-
   public ResultSet showAllSites(Connection connection) throws SQLException {
 
     PreparedStatement searchBodies;

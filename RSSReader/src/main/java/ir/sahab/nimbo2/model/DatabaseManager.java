@@ -79,34 +79,6 @@ public class DatabaseManager {
     return databaseManager;
   }
 
-  public void setIp(String ip) {
-    this.ip = ip;
-    createUrl();
-    dataSource.setUrl(url);
-  }
-
-  public void setPort(String port) {
-    this.port = port;
-    createUrl();
-    dataSource.setUrl(url);
-  }
-
-  public void setDbName(String dbName) {
-    this.dbName = dbName;
-    createUrl();
-    dataSource.setUrl(url);
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-    dataSource.setUsername(this.username);
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-    dataSource.setPassword(this.password);
-  }
-
   private void createUrl() {
     url =
         "jdbc:mysql://"
