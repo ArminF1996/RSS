@@ -25,7 +25,7 @@ public class DatabaseManager {
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
   private int maxTotalConnection;
-  final static Logger logger = Logger.getLogger(DatabaseManager.class);
+  final static private Logger logger = Logger.getLogger(DatabaseManager.class);
 
   private DatabaseManager() {
     PropertyConfigurator.configure("log4j.properties");
@@ -38,8 +38,8 @@ public class DatabaseManager {
       this.username = configFile.getProperty("DataBaseUserName");
       this.password = configFile.getProperty("DataBasePassword");
       this.dbName = configFile.getProperty("DataBaseName");
-      this.ip = configFile.getProperty("DataBaseIp");;
-      this.port = configFile.getProperty("DataBasePort");;
+      this.ip = configFile.getProperty("DataBaseIp");
+      this.port = configFile.getProperty("DataBasePort");
     } catch (IOException ex) {
       logger.error("end of file Error, please check the config file.", ex);
     } finally {

@@ -116,7 +116,7 @@ public class Terminal {
     String siteConfig = reader.nextLine().toLowerCase();
 
     try {
-      System.out.println((Controller.getInstance().addSite(rssUrl, siteName, siteConfig)));
+      System.err.println(Controller.getInstance().addSite(rssUrl, siteName, siteConfig));
     } catch (SQLException e) {
       System.err.println("some error happen, check the log file.");
       logger.error(
