@@ -17,8 +17,7 @@ public class Controller {
     return ourInstance;
   }
 
-  private Controller() {
-  }
+  private Controller() {}
 
   public void addExistingSitesToUpdateService() throws SQLException {
     DatabaseManager.getInstance().createDatabase();
@@ -27,8 +26,8 @@ public class Controller {
 
   public String addSite(String rssUrl, String siteName, String siteConfig) throws SQLException {
     return SiteRepository.getInstance()
-        .addSitesToDatabase(DatabaseManager.getInstance().getConnection(),
-            new Site(siteName, rssUrl, siteConfig));
+        .addSitesToDatabase(
+            DatabaseManager.getInstance().getConnection(), new Site(siteName, rssUrl, siteConfig));
   }
 
   public void removeSite(int siteID) throws SQLException {

@@ -21,7 +21,7 @@ public class NewsRepository {
     return ourInstance;
   }
 
-  public void addNewsToDatabase(News news) throws SQLException {
+  void addNewsToDatabase(News news) throws SQLException {
     Connection connection;
     connection = DatabaseManager.getInstance().getConnection();
 
@@ -65,7 +65,7 @@ public class NewsRepository {
     return resultSet;
   }
 
-  public ArrayList<String> getConfig(int siteID) {
+  ArrayList<String> getConfig(int siteID) {
     ArrayList<String> ret = new ArrayList<>();
     try {
       Connection connection = DatabaseManager.getInstance().getConnection();
@@ -149,7 +149,6 @@ public class NewsRepository {
     formats.add(new SimpleDateFormat("dd MMM yyyy"));
     formats.add(new SimpleDateFormat("yyyy-MM-dd"));
     java.util.Date date = null;
-    Boolean flag = false;
     for (SimpleDateFormat formatter : formats) {
       try {
         date = formatter.parse(dateString);
@@ -170,8 +169,8 @@ public class NewsRepository {
 
   private boolean duplicateNews(Connection connection, News news) {
     try {
-      PreparedStatement findDuplicate = connection
-          .prepareStatement("select newsID from news where linkHash = ?;");
+      PreparedStatement findDuplicate =
+          connection.prepareStatement("select newsID from news where linkHash = ?;");
       findDuplicate.setString(1, getHash(news.getLink()));
       ResultSet resultSet = findDuplicate.executeQuery();
       return resultSet.next();

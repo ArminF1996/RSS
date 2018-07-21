@@ -19,9 +19,9 @@ public class DatabaseUpdateService implements Runnable {
   private ArrayList<Site> sitesInDatabase;
   private final Object LOCK_FOR_WAIT_AND_NOTIFY_UPDATE;
   private int numberOfThreadsInPool;
-  final static Logger logger = Logger.getLogger(DatabaseUpdateService.class);
+  private static final Logger logger = Logger.getLogger(DatabaseUpdateService.class);
 
-  public int getNumberOfThreadsInPool() {
+  int getNumberOfThreadsInPool() {
     return numberOfThreadsInPool;
   }
 
@@ -37,7 +37,7 @@ public class DatabaseUpdateService implements Runnable {
     }
   }
 
-  public int getWaitTimeout() {
+  int getWaitTimeout() {
     return waitTimeout;
   }
 
