@@ -32,10 +32,6 @@ public class Site {
     this.siteID = siteID;
   }
 
-  public int getSiteID() {
-    return siteID;
-  }
-
   public void setSiteID(int siteID) {
     this.siteID = siteID;
   }
@@ -44,24 +40,12 @@ public class Site {
     return siteName;
   }
 
-  public void setSiteName(String siteName) {
-    this.siteName = siteName;
-  }
-
   public String getRssUrl() {
     return rssUrl;
   }
 
-  public void setRssUrl(String rssUrl) {
-    this.rssUrl = rssUrl;
-  }
-
   public String getConfigSettings() {
     return configSettings;
-  }
-
-  public void setConfigSettings(String configSettings) {
-    this.configSettings = configSettings;
   }
 
   public ArrayList<HashMap<String, String>> getRssData()

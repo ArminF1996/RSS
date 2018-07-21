@@ -41,13 +41,6 @@ public class NewsRepository {
     addNews.executeUpdate();
   }
 
-  public void remove(Connection connection, int newsID) throws SQLException {
-    PreparedStatement removeNews;
-    removeNews = connection.prepareStatement("DELETE FROM news WHERE newsID = ?");
-    removeNews.setInt(1, newsID);
-    removeNews.executeUpdate();
-  }
-
   public ResultSet searchByTitle(Connection connection, String str) throws SQLException {
     PreparedStatement searchTitles =
         connection.prepareStatement("select * from news where title like ?;");
