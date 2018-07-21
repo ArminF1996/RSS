@@ -1,8 +1,8 @@
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/view/Terminal.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseManager.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/News.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/Site.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/Controller/Controller.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/SiteRepository.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/NewsRepository.java
-/home/armin/nimbo/toyProjects/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseUpdateService.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/SiteRepository.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseManager.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/Controller/Controller.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/view/Terminal.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/NewsRepository.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/News.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/Site.java
+/home/omid/nimbo/OOP/RSS/RSSReader/src/main/java/ir/sahab/nimbo2/model/DatabaseUpdateService.java

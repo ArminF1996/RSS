@@ -32,23 +32,23 @@ public class Site {
     this.siteID = siteID;
   }
 
-  public void setSiteID(int siteID) {
+  void setSiteID(int siteID) {
     this.siteID = siteID;
   }
 
-  public String getSiteName() {
+  String getSiteName() {
     return siteName;
   }
 
-  public String getRssUrl() {
+  String getRssUrl() {
     return rssUrl;
   }
 
-  public String getConfigSettings() {
+  String getConfigSettings() {
     return configSettings;
   }
 
-  public ArrayList<HashMap<String, String>> getRssData()
+  ArrayList<HashMap<String, String>> getRssData()
       throws IOException, SAXException, ParserConfigurationException {
     ArrayList<HashMap<String, String>> rssDataMap = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class Site {
         .getTextContent();
   }
 
-  public void addNews() throws ParserConfigurationException, SAXException, IOException, SQLException {
+  void addNews() throws ParserConfigurationException, SAXException, IOException, SQLException {
     ArrayList<HashMap<String, String>> rssDataMapArray = getRssData();
     for (HashMap news : rssDataMapArray) {
       NewsRepository.getInstance()

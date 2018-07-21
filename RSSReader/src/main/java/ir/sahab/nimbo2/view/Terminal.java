@@ -19,7 +19,7 @@ import org.apache.log4j.PropertyConfigurator;
 public class Terminal {
 
   private Scanner reader;
-  final static Logger logger = Logger.getLogger(Terminal.class);
+  private static final Logger logger = Logger.getLogger(Terminal.class);
   private static Terminal ourInstance = new Terminal();
 
   public static Terminal getInstance() {
@@ -119,8 +119,7 @@ public class Terminal {
       System.err.println(Controller.getInstance().addSite(rssUrl, siteName, siteConfig));
     } catch (SQLException e) {
       System.err.println("some error happen, check the log file.");
-      logger.error(
-          "currently we can not add sites to database, please check log file.", e);
+      logger.error("currently we can not add sites to database, please check log file.", e);
     }
   }
 
@@ -187,8 +186,8 @@ public class Terminal {
       resultSet = Controller.getInstance().getTenLatestNews(id);
     } catch (SQLException e) {
       System.err.println("some error happen, check the log file.");
-      logger.error("some error happen from connecting to database, check the database connection!",
-          e);
+      logger.error(
+          "some error happen from connecting to database, check the database connection!", e);
       return;
     }
 
@@ -234,8 +233,12 @@ public class Terminal {
       logger.error("some error happen from database connection.", e);
     }
     for (HashMap siteInfo : sitesInformation) {
-      System.out.println(siteInfo.get("siteID") + "  " + siteInfo.get("siteName") + "  " + siteInfo
-          .get("numOfNews"));
+      System.out.println(
+          siteInfo.get("siteID")
+              + "  "
+              + siteInfo.get("siteName")
+              + "  "
+              + siteInfo.get("numOfNews"));
     }
   }
 
@@ -275,8 +278,8 @@ public class Terminal {
       resultSet = Controller.getInstance().findNewsByBody(input);
     } catch (SQLException e) {
       System.err.println("some error happen, check the log file.");
-      logger.error("some error happen from connecting to database, check the database connection!",
-          e);
+      logger.error(
+          "some error happen from connecting to database, check the database connection!", e);
       return;
     }
 
@@ -318,7 +321,7 @@ public class Terminal {
   }
 
   private boolean showSitesWithId() {
-    ResultSet searchResult = null;
+    ResultSet searchResult;
     try {
       searchResult = Controller.getInstance().getSitesWithId();
     } catch (SQLException e) {
@@ -349,7 +352,5 @@ public class Terminal {
     return true;
   }
 
-
-  public static void main(String[] args) {
-  }
+  public static void main(String[] args) {}
 }

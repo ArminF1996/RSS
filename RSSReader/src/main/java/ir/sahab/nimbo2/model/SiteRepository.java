@@ -14,9 +14,7 @@ public class SiteRepository {
     return ourInstance;
   }
 
-  private SiteRepository() {
-
-  }
+  private SiteRepository() {}
 
   public String addSitesToDatabase(Connection connection, Site site) {
     String result;
@@ -53,8 +51,8 @@ public class SiteRepository {
 
   public void remove(Connection connection, int siteID) throws SQLException {
 
-    PreparedStatement removeSite = connection
-        .prepareStatement("DELETE FROM sites WHERE siteID = ? ");
+    PreparedStatement removeSite =
+        connection.prepareStatement("DELETE FROM sites WHERE siteID = ? ");
     removeSite.setInt(1, siteID);
     removeSite.executeUpdate();
   }
@@ -88,8 +86,8 @@ public class SiteRepository {
 
   private boolean duplicateSite(Connection connection, Site site) {
     try {
-      PreparedStatement findDuplicate = connection
-          .prepareStatement("select siteID from sites where urlHash = ?;");
+      PreparedStatement findDuplicate =
+          connection.prepareStatement("select siteID from sites where urlHash = ?;");
       findDuplicate.setString(1, getHash(site.getRssUrl()));
       ResultSet resultSet = findDuplicate.executeQuery();
       return resultSet.next();

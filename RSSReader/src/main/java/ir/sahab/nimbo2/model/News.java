@@ -10,16 +10,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class News {
+class News {
 
   private int siteID;
-  private int newsID;
   private String title;
   private Timestamp publishDate;
   private String body;
   private String link;
 
-  public News(int siteID, String title, String publishDate, String link) {
+  News(int siteID, String title, String publishDate, String link) {
     this.siteID = siteID;
     this.title = title;
     this.publishDate = getSqlTimeStamp(reFormatPublishDate(publishDate));
@@ -68,23 +67,23 @@ public class News {
     return date;
   }
 
-  public int getSiteID() {
+  int getSiteID() {
     return siteID;
   }
 
-  public String getTitle() {
+  String getTitle() {
     return title;
   }
 
-  public Timestamp getPublishDate() {
+  Timestamp getPublishDate() {
     return publishDate;
   }
 
-  public String getBody() {
+  String getBody() {
     return body;
   }
 
-  public String getLink() {
+  String getLink() {
     return link;
   }
 }

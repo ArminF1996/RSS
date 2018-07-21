@@ -25,7 +25,7 @@ public class DatabaseManager {
   private static DatabaseManager databaseManager;
   private BasicDataSource dataSource;
   private int maxTotalConnection;
-  final static private Logger logger = Logger.getLogger(DatabaseManager.class);
+  private static final Logger logger = Logger.getLogger(DatabaseManager.class);
 
   private DatabaseManager() {
     PropertyConfigurator.configure("log4j.properties");
@@ -69,9 +69,7 @@ public class DatabaseManager {
     createDatabaseEntities();
   }
 
-  /**
-   * @author ArminF96
-   */
+  /** @author ArminF96 */
   public static DatabaseManager getInstance() {
     if (databaseManager == null) {
       databaseManager = new DatabaseManager();
@@ -100,9 +98,7 @@ public class DatabaseManager {
             + "&useSSL=true&autoReconnect=true";
   }
 
-  /**
-   * @author ArminF96
-   */
+  /** @author ArminF96 */
   private void setupDataSource(
       int minIdleConnection,
       int maxIdleConnection,
@@ -127,9 +123,7 @@ public class DatabaseManager {
     return this.dataSource.getConnection();
   }
 
-  /**
-   * @author ArminF96
-   */
+  /** @author ArminF96 */
   private void createDatabaseEntities() throws SQLException {
 
     String siteEntity =
