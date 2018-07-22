@@ -1,6 +1,6 @@
-# Curler: for news agency (support utf-8 encode).
+# Crawler: for news agency (support utf-8 encode).
 
-## the database schema of cruller is shown below, this aplication compatible with **mysql** database.
+## the database schema of Crawler is shown below, this aplication compatible with **mysql** database.
 
 ![dbschema](https://user-images.githubusercontent.com/31438511/42958549-0a59c610-8b9b-11e8-9f4c-1fe817500f9b.png)
 
