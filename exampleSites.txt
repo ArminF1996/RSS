@@ -1,0 +1,20 @@
+site:								config:
+
+http://www.irna.ir/fa/rss.aspx					class/BodyText
+https://www.isna.ir/rss						class/item-body content-full-news
+https://www.yjc.ir/fa/rss/allnews           			class/body
+http://www.tabnak.ir/fa/rss/allnews				class/body      
+http://www.entekhab.ir/fa/rss/allnews				class/subtitle col-xs-36
+https://www.mehrnews.com/rss					class/item-body
+http://www.bartarinha.ir/fa/rss/allnews				class/body body_media_content_show
+http://www.ibena.ir/rss						class/item-body
+http://hawzahnews.com/rss					class/body 
+http://shabestan.ir/RSS						style/margin-top: 15px; line-height: 24px;
+https://www.borna.news/feeds/					class/fn20 article-body
+http://www.imna.ir/rss						itemprop/articleBody
+http://iqna.ir/fa/rss/allnews					class/body
+http://qodsna.com/fa/content/q/rss				class/main_place
+http://www.mojnews.com/feeds/					id/content-text
+http://www.iribnews.ir/fa/rss/allnews				class/dispnews-title ng-binding
+http://www.varzesh3.com/rss/all					class/col-xs-12 news-page--news-text text-justify
+https://www.farsnews.com/RSS		    			class/nwstxtmainpane
